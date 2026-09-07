@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bill Explainer</title>
+<style>
+  :root {
+    --bg-1: #f0f3f8;
+    --bg-2: #e9eef5;
+    --surface: #ffffff;
+    --surface-soft: #f6f8fb;
+    --text: #1b2430;
+    --muted: #6b7686;
+    --border: #e2e7ee;
+    --accent: #4f6ef7;
+    --accent-dark: #3a56d8;
+    --accent-soft: #eef1ff;
+    --accent-light: #7d8ffc;
+    --accent-rgb: 79, 110, 247;
+    --good: #1f9d6c;
+    --good-soft: #e7f8f0;
+    --good-rgb: 31, 157, 108;
+    --warn: #c2702f;
+    --warn-soft: #fdf1e6;
+    --warn-rgb: 194, 112, 47;
+    --compare: #2f6fc2;
+    --compare-soft: #eaf2fb;
+    --compare-rgb: 47, 111, 194;
+    --danger: #d23f4e;
+    --danger-soft: #fdedf0;
+    --danger-rgb: 210, 63, 78;
+    --shadow: 0 1px 2px rgba(20, 30, 50, 0.04), 0 8px 24px rgba(20, 30, 50, 0.06);
+    --radius: 16px;
+  }
+  html[data-theme="forest"] {
+    --bg-1: #eff5f1; --bg-2: #e6f0e9;
+    --accent: #17915f; --accent-dark: #12784e; --accent-soft: #e7f8f0; --accent-light: #4db98a; --accent-rgb: 23, 145, 95;
+  }
+  html[data-theme="sunset"] {
+    --bg-1: #f8f1ec; --bg-2: #f3e9e1;
+    --accent: #d9702f; --accent-dark: #b85a22; --accent-soft: #fdeee4; --accent-light: #ef9a5f; --accent-rgb: 217, 112, 47;
+  }
+  html[data-theme="grape"] {
+    --bg-1: #f4f0f9; --bg-2: #ede6f6;
+    --accent: #7c4fe0; --accent-dark: #6238c2; --accent-soft: #f1ebfe; --accent-light: #a684ec; --accent-rgb: 124, 79, 224;
+  }
+  html[data-mode="dark"] {
+    --bg-1: #14161d; --bg-2: #1a1d26;
+    --surface: #1e212b; --surface-soft: #262a35;
+    --text: #e7eaf1; --muted: #8b93a4; --border: #333846;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --accent-soft: rgba(var(--accent-rgb), 0.18);
+    --good-soft: rgba(31, 157, 108, 0.18);
+    --warn-soft: rgba(194, 112, 47, 0.18);
+    --compare-soft: rgba(47, 111, 194, 0.18);
+    --danger-soft: rgba(210, 63, 78, 0.18);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Helvetica, Arial, sans-serif;
+    background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px 60px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app {
+    width: 100%;
+    max-width: 680px;
+  }
+
+  .hero {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .hero-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px rgba(var(--accent-rgb), 0.35);
+  }
+  .hero-icon svg { width: 22px; height: 22px; }
+  .hero h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .hero p {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title svg { width: 14px; height: 14px; opacity: 0.7; }
+
+  label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13.5px; }
+
+  .bill-text-label-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .bill-text-label-row label { margin-bottom: 6px; }
+  .sample-bill-btn {
+    background: none;
+    border: none;
+    box-shadow: none;
+    width: auto;
+    padding: 0;
+    margin-bottom: 6px;
+    color: var(--accent-dark);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .sample-bill-btn:hover:not(:disabled) { transform: none; opacity: 0.8; }
+
+  .sample-result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  input[type="password"], input[type="text"], input[type="email"], textarea {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--surface-soft);
+    color: var(--text);
+    resize: vertical;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  input[type="password"]:focus, input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+    background: var(--surface);
+  }
+  textarea { min-height: 130px; line-height: 1.5; }
+
+  .auth-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+  .auth-tab {
+    flex: 1;
+    background: var(--surface-soft);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    width: auto;
+    box-shadow: none;
+  }
+  .auth-tab.active { background: var(--accent-soft); color: var(--accent-dark); border-color: rgba(var(--accent-rgb), 0.35); }
+  .auth-tab:hover:not(:disabled) { transform: none; }
+  #signupForm label, #loginForm label { margin-top: 10px; }
+  #signupForm label:first-child, #loginForm label:first-child { margin-top: 0; }
+  .account-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14px; }
+  .auth-hint { color: var(--muted); font-size: 13px; text-align: center; margin: 10px 0 0; }
+
+  .account-trigger-wrap { position: fixed; top: 20px; left: 20px; z-index: 1100; }
+  .account-trigger {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+  }
+  .account-trigger svg { width: 20px; height: 20px; }
+  .account-trigger { overflow: hidden; }
+  .account-trigger img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+  .avatar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .avatar-preview {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .avatar-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .avatar-preview svg { width: 22px; height: 22px; color: var(--muted); }
+  .change-photo-btn { font-size: 13px; padding: 7px 12px; }
+  .account-panel {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 320px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    padding: 18px;
+  }
+  .account-panel.open { display: block; }
+  @media (max-width: 480px) {
+    .account-panel { width: calc(100vw - 40px); }
+  }
+
+  .theme-picker { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .theme-picker-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin-right: 2px; }
+  .theme-swatch {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    padding: 0;
+    border: 2px solid transparent;
+    box-shadow: none;
+    flex-shrink: 0;
+  }
+  .theme-swatch:hover:not(:disabled) { transform: scale(1.08); }
+  .theme-swatch.active { border-color: var(--text); }
+  .theme-swatch[data-swatch="ocean"] { background: linear-gradient(135deg, #4f6ef7, #7d8ffc); }
+  .theme-swatch[data-swatch="forest"] { background: linear-gradient(135deg, #17915f, #4db98a); }
+  .theme-swatch[data-swatch="sunset"] { background: linear-gradient(135deg, #d9702f, #ef9a5f); }
+  .theme-swatch[data-swatch="grape"] { background: linear-gradient(135deg, #7c4fe0, #a684ec); }
+
+  .theme-mode-toggle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    padding: 0;
+    margin-left: auto;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .theme-mode-toggle svg { width: 15px; height: 15px; }
+  .theme-mode-toggle:hover:not(:disabled) { background: var(--accent-soft); color: var(--accent-dark); transform: none; }
+
+  .panel-nav { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
+  .panel-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+  .panel-nav-btn svg { width: 16px; height: 16px; color: var(--muted); }
+
+  /* landing page */
+  .simplify-cta-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1100;
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 18px;
+    font-size: 13.5px;
+  }
+  .simplify-cta-btn svg { width: 15px; height: 15px; }
+  @media (max-width: 420px) {
+    .simplify-cta-btn { padding: 9px 13px; font-size: 12px; gap: 4px; }
+  }
+
+  .landing-hero { text-align: center; padding: 14px 4px 30px; }
+  .landing-hero-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    box-shadow: 0 8px 22px rgba(var(--accent-rgb), 0.35);
+  }
+  .landing-hero-icon svg { width: 28px; height: 28px; }
+  .landing-hero h1 { font-size: 30px; font-weight: 800; margin: 0 0 10px; letter-spacing: -0.02em; }
+  .landing-hero p { font-size: 16px; color: var(--muted); margin: 0 auto; max-width: 420px; }
+
+  .landing-features { display: flex; flex-direction: column; gap: 14px; margin-bottom: 26px; }
+  .landing-feature-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .landing-feature-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .landing-feature-icon svg { width: 20px; height: 20px; color: white; }
+  .landing-feature-text h3 { margin: 0 0 3px; font-size: 15px; font-weight: 700; }
+  .landing-feature-text p { margin: 0; font-size: 13.5px; color: var(--muted); line-height: 1.4; }
+
+  .landing-feature-icon.feat-summaries { background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
+  .landing-feature-icon.feat-insurance { background: linear-gradient(140deg, #0e8a6a, #12b88e); }
+  .landing-feature-icon.feat-dispute { background: linear-gradient(140deg, #2d1b4e, #4a2d8a); }
+  .landing-feature-icon.feat-spending { background: linear-gradient(140deg, #1e2a3a, #2b3d56); }
+
+  .landing-get-started-btn { margin-bottom: 34px; }
+
+  @media (max-width: 480px) {
+    .landing-hero h1 { font-size: 25px; }
+    .landing-hero p { font-size: 14.5px; }
+    .landing-feature-row { flex-direction: column; text-align: center; gap: 10px; padding: 18px 16px; }
+  }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal-card { position: relative; background: var(--surface); border-radius: 16px; padding: 26px 22px 22px; max-width: 340px; width: calc(100vw - 40px); box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
+  .modal-close-btn { position: absolute; top: 8px; right: 10px; background: none; border: none; box-shadow: none; font-size: 24px; line-height: 1; color: var(--muted); cursor: pointer; padding: 6px; width: auto; }
+  .modal-card h3 { margin: 0 0 8px; font-size: 16px; }
+  .modal-card p { margin: 0 0 16px; font-size: 13.5px; color: var(--muted); }
+
+
+  .fullscreen-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--bg-1);
+    z-index: 1500;
+    overflow-y: auto;
+  }
+  .fullscreen-overlay.open { display: block; }
+  .fullscreen-inner { max-width: 640px; margin: 0 auto; padding: 24px 20px 60px; }
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--accent-dark);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 0;
+    margin-bottom: 12px;
+  }
+  .back-btn svg { width: 16px; height: 16px; }
+  .screen-title { font-size: 19px; font-weight: 700; margin: 0 0 16px; }
+
+  .key-row { display: flex; gap: 8px; }
+  .key-row input { flex: 1; }
+  small.hint { color: var(--muted); display: block; margin-top: 8px; font-size: 12.5px; line-height: 1.5; }
+
+  .dropzone {
+    border: 1.5px dashed var(--border);
+    border-radius: 12px;
+    padding: 28px 20px;
+    text-align: center;
+    color: var(--muted);
+    cursor: pointer;
+    background: var(--surface-soft);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .dropzone:hover { border-color: #c7d2e3; }
+  .dropzone.dragover { border-color: var(--accent); background: var(--accent-soft); }
+  .dropzone svg { width: 26px; height: 26px; margin-bottom: 8px; opacity: 0.55; }
+  .dropzone-label { font-size: 14px; font-weight: 500; }
+  .dropzone-sub { font-size: 12.5px; margin-top: 2px; opacity: 0.85; }
+  .dropzone img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 10px;
+    margin-top: 14px;
+    box-shadow: 0 4px 14px rgba(20, 30, 50, 0.12);
+  }
+  .pdf-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px 16px 16px;
+    color: var(--muted);
+  }
+  .pdf-placeholder svg { width: 38px; height: 38px; opacity: 0.7; }
+  .pdf-placeholder span { font-size: 13px; font-weight: 500; }
+
+  .or-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 18px 0;
+  }
+  .or-divider::before, .or-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  button {
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 22px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.1s, box-shadow 0.15s, opacity 0.15s;
+    box-shadow: 0 6px 18px rgba(var(--accent-rgb), 0.3);
+  }
+  button:hover:not(:disabled) { transform: translateY(-1px); }
+  button:active:not(:disabled) { transform: translateY(0); }
+  button:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+  button.secondary {
+    background: transparent;
+    color: var(--accent-dark);
+    border: 1px solid var(--border);
+    width: auto;
+    padding: 10px 16px;
+    font-size: 13.5px;
+    box-shadow: none;
+    white-space: nowrap;
+  }
+  button.secondary:hover:not(:disabled) { background: var(--accent-soft); transform: none; }
+
+  .status {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--muted);
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .status.visible { display: flex; }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error {
+    background: var(--danger-soft);
+    color: var(--danger);
+    border: 1px solid #f6d3d9;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .file-name { font-size: 12.5px; color: var(--accent-dark); margin-top: 10px; font-weight: 600; }
+
+  #resultCard { display: none; }
+  #reminderCard { display: none; }
+  #result { line-height: 1.6; font-size: 14.5px; }
+  .result-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+  .result-header .card-title { margin: 0; }
+  #exportPdfBtn svg { width: 14px; height: 14px; margin-right: 5px; vertical-align: middle; }
+
+  @media print {
+    body * { visibility: hidden; }
+    .pdf-export-target, .pdf-export-target * { visibility: visible; }
+    .pdf-export-target { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; border: none; }
+    .pdf-export-overlay { position: static !important; overflow: visible !important; inset: auto !important; }
+    #exportPdfBtn, .history-export-pdf-btn, .copy-btn { display: none !important; }
+  }
+
+  .due-date-display { font-size: 22px; font-weight: 700; color: var(--accent-dark); margin: 2px 0 18px; }
+  .reminder-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .reminder-row label { font-size: 13.5px; font-weight: 500; white-space: nowrap; }
+  .reminder-row input[type=date] { flex: 1; min-width: 140px; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13.5px; background: var(--bg); color: var(--text); }
+  .reminder-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .reminder-status { font-size: 13px; margin-top: 8px; min-height: 20px; }
+  .reminder-status.ok { color: #1f9d6c; font-weight: 500; }
+  .reminder-status.err { color: #c0392b; font-weight: 500; }
+  #result h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent-dark);
+    margin: 22px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #result h2:first-child { margin-top: 0; }
+  #result p { margin: 0 0 10px; }
+  #result ul { padding-left: 20px; margin: 0 0 10px; }
+  #result li { margin-bottom: 4px; }
+  #result code {
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  #result strong { font-weight: 700; }
+
+  .section-block { padding: 14px 16px; border-radius: 12px; margin-bottom: 14px; }
+  .section-type { background: var(--surface-soft); border: 1px solid var(--border); }
+  .section-flag { background: var(--warn-soft); border: 1px solid rgba(var(--warn-rgb), 0.3); }
+  .section-flag h2 { color: var(--warn); }
+  .section-bottom { background: var(--good-soft); border: 1px solid rgba(var(--good-rgb), 0.3); }
+  .section-bottom h2 { color: var(--good); }
+  .section-dispute { background: var(--accent-soft); border: 1px solid rgba(var(--accent-rgb), 0.35); }
+  .section-dispute h2 { color: var(--accent-dark); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .section-coverage { background: var(--good-soft); border: 1px solid rgba(var(--good-rgb), 0.3); }
+  .section-coverage h2 { color: var(--good); }
+  .section-changed { background: var(--compare-soft); border: 1px solid rgba(var(--compare-rgb), 0.3); }
+  .section-changed h2 { color: var(--compare); }
+  .section-dispute pre {
+    white-space: pre-wrap;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    margin: 0;
+  }
+  .copy-btn {
+    background: var(--surface);
+    color: var(--accent-dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+    width: auto;
+    box-shadow: none;
+    cursor: pointer;
+  }
+  .copy-btn:hover { background: var(--accent-soft); }
+
+  .capture-row { display: flex; gap: 10px; margin-top: 12px; }
+  .capture-row button.secondary { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; }
+  .capture-row button.secondary svg { width: 15px; height: 15px; }
+
+  .camera-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 20, 30, 0.72);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 24px;
+  }
+  .camera-overlay.visible { display: flex; }
+  .camera-modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 18px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  }
+  .camera-modal video, .camera-modal canvas {
+    width: 100%;
+    border-radius: 12px;
+    background: #000;
+    display: block;
+  }
+  .camera-actions { display: flex; gap: 10px; margin-top: 14px; }
+  .camera-actions button { flex: 1; }
+  .camera-error { color: var(--danger); font-size: 13.5px; margin-top: 10px; text-align: center; }
+
+  .spend-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+  }
+  .spend-label { width: 92px; font-size: 13.5px; font-weight: 600; flex-shrink: 0; }
+  .spend-bar-track {
+    flex: 1;
+    height: 8px;
+    border-radius: 5px;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .spend-bar-fill { height: 100%; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); border-radius: 5px; }
+  .spend-amount { width: 78px; text-align: right; font-size: 13.5px; font-weight: 700; flex-shrink: 0; }
+  .spend-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .spend-total .amount { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; }
+  .spend-total .label { font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; }
+  .spend-empty { color: var(--muted); font-size: 13.5px; text-align: center; padding: 6px 0 2px; }
+  .spend-reset {
+    background: none;
+    color: var(--muted);
+    border: none;
+    width: auto;
+    box-shadow: none;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0;
+    margin-top: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .insurance-actions { display: flex; gap: 10px; margin-top: 12px; }
+  .insurance-actions button { flex: 1; }
+  .insurance-status { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+  .insurance-status.saved { color: var(--good); font-weight: 600; }
+
+  @media (max-width: 480px) {
+    body { padding: 24px 12px 40px; }
+    .card { padding: 16px; border-radius: 14px; }
+    .hero h1 { font-size: 19px; }
+    .hero p { font-size: 13px; }
+    .capture-row { flex-direction: column; }
+    button { padding: 13px 18px; font-size: 14.5px; }
+  }
+
+  /* ---- redesigned fullscreen screens ---- */
+  .screen-hero {
+    padding: 52px 20px 30px;
+    text-align: center;
+    position: relative;
+  }
+  .screen-hero .back-btn {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    margin: 0;
+    padding: 8px 4px;
+  }
+  .screen-hero-icon {
+    width: 52px; height: 52px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+    background: rgba(255,255,255,0.2);
+  }
+  .screen-hero-icon svg { width: 24px; height: 24px; }
+  .screen-hero h2 { font-size: 21px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.01em; color: inherit; }
+  .screen-hero p { font-size: 13.5px; margin: 0; opacity: 0.8; }
+
+  /* spending: dark navy */
+  .spending-screen-hero { background: #1b2a45; color: white; padding-bottom: 36px; }
+  .spending-screen-hero .back-btn { color: rgba(255,255,255,0.7); }
+  .spending-screen-hero .back-btn:hover { color: white; }
+  .spending-total-amount { font-size: 46px; font-weight: 900; letter-spacing: -0.02em; margin: 4px 0 4px; }
+  .spending-total-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; opacity: 0.5; }
+
+  /* insurance: teal/green */
+  .insurance-screen-hero { background: linear-gradient(140deg, #0e8a6a, #12b88e); color: white; }
+  .insurance-screen-hero .back-btn { color: rgba(255,255,255,0.8); }
+  .insurance-screen-hero .back-btn:hover { color: white; }
+
+  /* category cards (spending screen) */
+  .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  @media (max-width: 380px) { .cat-grid { grid-template-columns: 1fr; } }
+  .cat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 14px 12px;
+    box-shadow: var(--shadow);
+  }
+  .cat-card-icon-wrap {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 8px;
+  }
+  .cat-card-icon-wrap svg { width: 15px; height: 15px; }
+  .cat-card-name { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 3px; }
+  .cat-card-amount { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .cat-card-bar { height: 4px; border-radius: 3px; background: var(--border); overflow: hidden; }
+  .cat-card-bar-fill { height: 100%; border-radius: 3px; }
+
+  /* history screen */
+  .history-screen-hero { background: linear-gradient(140deg, #1e2a3a, #2b3d56); color: white; }
+  .history-screen-hero .back-btn { color: rgba(255,255,255,0.7); }
+  .history-screen-hero .back-btn:hover { color: white; }
+  .history-hero-count { font-size: 46px; font-weight: 900; letter-spacing: -0.02em; margin: 4px 0 4px; }
+  .history-hero-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; opacity: 0.5; }
+
+  .bill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: border-color 0.15s, transform 0.1s;
+    box-shadow: var(--shadow);
+  }
+  .bill-card:hover { border-color: rgba(var(--accent-rgb), 0.45); transform: translateY(-1px); }
+  .bill-card:active { transform: translateY(0); }
+  .bill-card-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .bill-card-icon svg { width: 16px; height: 16px; }
+  .bill-card-body { flex: 1; min-width: 0; }
+  .bill-card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 2px; }
+  .bill-card-cat { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+  .bill-card-date { font-size: 12px; color: var(--muted); flex-shrink: 0; }
+  .bill-card-amount { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; margin: 1px 0 4px; }
+  .bill-card-snippet { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bill-card-chevron { color: var(--muted); flex-shrink: 0; align-self: center; }
+  .bill-card-chevron svg { width: 16px; height: 16px; }
+
+  .history-detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .history-detail-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .history-detail-icon svg { width: 18px; height: 18px; }
+  .history-detail-cat { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .history-detail-meta { font-size: 14px; color: var(--muted); }
+
+  /* leaderboard screen */
+  .leaderboard-screen-hero { background: linear-gradient(140deg, #2d1b4e, #4a2d8a); color: white; }
+  .leaderboard-screen-hero .back-btn { color: rgba(255,255,255,0.7); }
+  .leaderboard-screen-hero .back-btn:hover { color: white; }
+
+  /* leaderboard list */
+  .lb-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-rank { font-size: 14px; font-weight: 800; width: 24px; flex-shrink: 0; text-align: center; color: var(--muted); }
+  .lb-rank.gold { color: #c89200; }
+  .lb-rank.silver { color: #8a8a8a; }
+  .lb-rank.bronze { color: #a0622a; }
+  .lb-user { flex: 1; font-size: 14px; font-weight: 600; }
+  .lb-disputed { font-size: 13.5px; font-weight: 700; color: var(--good); }
+  .lb-empty { color: var(--muted); font-size: 13.5px; text-align: center; padding: 14px 0 4px; }
+</style>
+</head>
+<body>
+<div class="account-trigger-wrap" id="accountTriggerWrap">
+  <button class="account-trigger" id="accountTriggerBtn" type="button" aria-label="Account">
+    <svg id="accountTriggerIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-dark)"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </button>
+  <div class="account-panel" id="accountPanel">
+    <div class="theme-picker" id="themePicker">
+      <span class="theme-picker-label">Theme</span>
+      <button class="theme-swatch" data-swatch="ocean" type="button" aria-label="Ocean theme"></button>
+      <button class="theme-swatch" data-swatch="forest" type="button" aria-label="Forest theme"></button>
+      <button class="theme-swatch" data-swatch="sunset" type="button" aria-label="Sunset theme"></button>
+      <button class="theme-swatch" data-swatch="grape" type="button" aria-label="Grape theme"></button>
+      <button class="theme-mode-toggle" id="themeModeToggle" type="button" aria-label="Toggle dark mode">
+        <svg id="themeModeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg id="themeModeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+    <div id="accountLoggedOut">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" type="button">Log in</button>
+        <button class="auth-tab" id="tabSignup" type="button">Sign up</button>
+      </div>
+      <div id="loginForm">
+        <label for="loginIdentifier">Username or email</label>
+        <input type="text" id="loginIdentifier" placeholder="you@example.com">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••">
+        <button id="loginBtn" type="button" style="margin-top:14px">Log in</button>
+      </div>
+      <div id="signupForm" style="display:none">
+        <label for="signupUsername">Username</label>
+        <input type="text" id="signupUsername" placeholder="janedoe">
+        <label for="signupEmail">Email</label>
+        <input type="email" id="signupEmail" placeholder="you@example.com">
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" placeholder="At least 8 characters">
+        <button id="signupBtn" type="button" style="margin-top:14px">Create account</button>
+      </div>
+      <div class="auth-hint">Log in to save your bill history, match charges against your insurance plan, and track spending over time.</div>
+      <div id="authError"></div>
+    </div>
+    <div id="accountLoggedIn" style="display:none">
+      <div class="avatar-row">
+        <div class="avatar-preview" id="avatarPreview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <button class="secondary change-photo-btn" id="changePhotoBtn" type="button">Change photo</button>
+        <input type="file" id="avatarFileInput" accept="image/*" style="display:none">
+      </div>
+      <div class="account-row">
+        <span>Logged in as <strong id="accountUsername"></strong></span>
+        <button class="secondary" id="logoutBtn" type="button">Log out</button>
+      </div>
+
+      <div class="panel-nav">
+        <button class="panel-nav-btn" id="openLeaderboardScreenBtn" type="button">
+          <span>Dispute leaderboard</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="panel-nav-btn" id="openHistoryScreenBtn" type="button">
+          <span>Bill history</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="panel-nav-btn" id="openSpendingScreenBtn" type="button">
+          <span>Spending by category</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="panel-nav-btn" id="openInsuranceScreenBtn" type="button">
+          <span>Your insurance plan</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="simplify-cta-btn" id="simplifyCtaBtn" type="button">
+  Simplify a bill
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+</button>
+
+<div class="fullscreen-overlay" id="spendingScreen">
+  <div class="screen-hero spending-screen-hero">
+    <button class="back-btn" id="closeSpendingScreenBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <div class="spending-total-amount" id="spendingHeroTotal">$0.00</div>
+    <div class="spending-total-label">Total tracked spending</div>
+  </div>
+  <div class="fullscreen-inner">
+    <div id="spendingContent">
+      <div id="spendingSummary"></div>
+    </div>
+  </div>
+</div>
+
+<div class="fullscreen-overlay" id="insuranceScreen">
+  <div class="screen-hero insurance-screen-hero">
+    <button class="back-btn" id="closeInsuranceScreenBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <div class="screen-hero-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <h2>Your Insurance Plan</h2>
+    <p>Save your coverage details for personalized bill analysis</p>
+  </div>
+  <div class="fullscreen-inner">
+    <div id="insuranceContent">
+      <label for="insurancePlanText">Coverage details (deductible, copay, exclusions, etc.)</label>
+      <textarea id="insurancePlanText" placeholder="Paste details from your insurance plan here, or upload a photo or PDF of it below..." style="min-height: 90px;"></textarea>
+      <div class="insurance-actions">
+        <button class="secondary" id="scanInsuranceBtn" type="button">Upload photo or PDF instead</button>
+        <button id="saveInsuranceBtn" type="button">Save plan</button>
+      </div>
+      <input type="file" id="insuranceFileInput" accept="image/*,application/pdf" style="display:none">
+      <div class="insurance-status" id="insuranceStatus"></div>
+    </div>
+  </div>
+</div>
+
+<div class="fullscreen-overlay" id="leaderboardScreen">
+  <div class="screen-hero leaderboard-screen-hero">
+    <button class="back-btn" id="closeLeaderboardScreenBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <div class="screen-hero-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 21v-4M17 8l1-5H6l1 5"/><path d="M6 8c0 4.418 2.686 8 6 8s6-3.582 6-8"/></svg>
+    </div>
+    <h2>Dispute Leaderboard</h2>
+    <p>Top users fighting bad bills</p>
+  </div>
+  <div class="fullscreen-inner">
+    <div id="leaderboardList"><div class="lb-empty">Loading...</div></div>
+  </div>
+</div>
+
+<div class="fullscreen-overlay" id="historyScreen">
+  <div class="screen-hero history-screen-hero">
+    <button class="back-btn" id="closeHistoryScreenBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <div class="history-hero-count" id="historyHeroCount">0</div>
+    <div class="history-hero-label">Bills explained</div>
+  </div>
+  <div class="fullscreen-inner">
+    <div id="historyContent">
+      <div id="historyList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="fullscreen-overlay" id="historyDetailScreen">
+  <div class="fullscreen-inner" style="padding-top:16px">
+    <button class="back-btn" id="closeHistoryDetailBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Bill history
+    </button>
+    <div id="historyDetailContent"></div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="landing-hero">
+    <div class="landing-hero-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+    </div>
+    <h1>Bill Explainer</h1>
+    <p>Turn any confusing bill into a plain-English summary in seconds.</p>
+  </div>
+
+  <div class="landing-features">
+    <div class="landing-feature-row">
+      <div class="landing-feature-icon feat-summaries">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+      </div>
+      <div class="landing-feature-text">
+        <h3>Plain-English summaries</h3>
+        <p>Upload a photo or paste the text — get a breakdown of every charge in seconds.</p>
+      </div>
+    </div>
+    <div class="landing-feature-row">
+      <div class="landing-feature-icon feat-insurance">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="landing-feature-text">
+        <h3>Insurance matching</h3>
+        <p>See what your plan actually covers on each charge, based on your own coverage details.</p>
+      </div>
+    </div>
+    <div class="landing-feature-row">
+      <div class="landing-feature-icon feat-dispute">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+      </div>
+      <div class="landing-feature-text">
+        <h3>Dispute letters</h3>
+        <p>Spot billing errors and get a ready-to-send letter to fight them.</p>
+      </div>
+    </div>
+    <div class="landing-feature-row">
+      <div class="landing-feature-icon feat-spending">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div class="landing-feature-text">
+        <h3>Spending tracker</h3>
+        <p>See where your money goes, broken down by category, bill after bill.</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="landing-get-started-btn" id="getStartedBtn" type="button">Get started free</button>
+
+  <div class="hero">
+    <div class="hero-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+    </div>
+    <div>
+      <h1>Bill Explainer</h1>
+      <p>Upload a photo or paste the text — get a plain-English breakdown.</p>
+    </div>
+  </div>
+
+  <div class="card" id="uploadCard">
+    <p class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" opacity="0"/><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+      Your bill
+    </p>
+    <div class="dropzone" id="dropzone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 9 12 4 17 9"/><line x1="12" y1="4" x2="12" y2="16"/></svg>
+      <div id="dropzoneText">
+        <div class="dropzone-label">Drag & drop a photo, or click to choose a file</div>
+        <div class="dropzone-sub">JPG, PNG, HEIC, or PDF</div>
+      </div>
+      <input type="file" id="fileInput" accept="image/*,application/pdf" style="display:none">
+      <img id="preview" style="display:none">
+      <div id="pdfPreview" class="pdf-placeholder" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span>PDF ready</span>
+      </div>
+    </div>
+    <div class="file-name" id="fileName"></div>
+
+    <div class="capture-row">
+      <button class="secondary" id="takePhotoBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Take a photo
+      </button>
+      <input type="file" id="cameraFileInput" accept="image/*" capture="environment" style="display:none">
+    </div>
+
+    <div class="or-divider">or paste text</div>
+
+    <div class="bill-text-label-row">
+      <label for="billText">Bill text</label>
+      <button class="sample-bill-btn" id="sampleBillBtn" type="button">Try a sample bill</button>
+    </div>
+    <textarea id="billText" placeholder="Paste the bill contents here..."></textarea>
+  </div>
+
+  <button id="explainBtn">Explain this bill</button>
+  <div class="status" id="status"><div class="spinner"></div><span>Reading your bill...</span></div>
+  <div id="errorBox"></div>
+
+  <div class="card" id="resultCard">
+    <div class="result-header">
+      <p class="card-title">Your bill, explained</p>
+      <button class="secondary" id="exportPdfBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export as PDF
+      </button>
+    </div>
+    <div id="result"></div>
+  </div>
+
+  <div class="card" id="reminderCard">
+    <p class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Payment due
+    </p>
+    <div class="due-date-display" id="dueDateDisplay"></div>
+    <div class="reminder-row">
+      <label for="reminderDate">Remind me on</label>
+      <input type="date" id="reminderDate">
+    </div>
+    <div class="reminder-btns">
+      <button class="secondary" id="browserReminderBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;margin-right:4px;vertical-align:middle"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        Browser notification
+      </button>
+      <button class="secondary" id="emailReminderBtn" type="button" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;margin-right:4px;vertical-align:middle"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email me
+      </button>
+    </div>
+    <div class="reminder-status" id="reminderStatus"></div>
+  </div>
+</div>
+
+<div class="camera-overlay" id="cameraOverlay">
+  <div class="camera-modal">
+    <video id="cameraVideo" autoplay playsinline></video>
+    <canvas id="cameraCanvas" style="display:none"></canvas>
+    <div class="camera-error" id="cameraError"></div>
+    <div class="camera-actions">
+      <button class="secondary" id="cameraCancelBtn" type="button">Cancel</button>
+      <button id="cameraCaptureBtn" type="button">Capture</button>
+      <button id="cameraRetakeBtn" type="button" style="display:none">Retake</button>
+      <button id="cameraUseBtn" type="button" style="display:none">Use photo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const dropzone = document.getElementById("dropzone");
+const dropzoneText = document.getElementById("dropzoneText");
+const fileInput = document.getElementById("fileInput");
+const preview = document.getElementById("preview");
+const pdfPreviewEl = document.getElementById("pdfPreview");
+const fileNameEl = document.getElementById("fileName");
+const billText = document.getElementById("billText");
+const explainBtn = document.getElementById("explainBtn");
+const statusEl = document.getElementById("status");
+const errorBox = document.getElementById("errorBox");
+const resultCard = document.getElementById("resultCard");
+const resultEl = document.getElementById("result");
+const reminderCard = document.getElementById("reminderCard");
+const dueDateDisplay = document.getElementById("dueDateDisplay");
+const reminderDateInput = document.getElementById("reminderDate");
+const browserReminderBtn = document.getElementById("browserReminderBtn");
+const emailReminderBtn = document.getElementById("emailReminderBtn");
+const reminderStatus = document.getElementById("reminderStatus");
+const spendingSummaryEl = document.getElementById("spendingSummary");
+const uploadCard = document.getElementById("uploadCard");
+
+function scrollToUploadCard() {
+  uploadCard.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+document.getElementById("simplifyCtaBtn").addEventListener("click", scrollToUploadCard);
+document.getElementById("getStartedBtn").addEventListener("click", scrollToUploadCard);
+
+const THEME_KEY = "billExplainerTheme";
+const themeSwatches = document.querySelectorAll(".theme-swatch");
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  themeSwatches.forEach(sw => sw.classList.toggle("active", sw.dataset.swatch === theme));
+}
+applyTheme(localStorage.getItem(THEME_KEY) || "ocean");
+themeSwatches.forEach(sw => {
+  sw.addEventListener("click", () => {
+    localStorage.setItem(THEME_KEY, sw.dataset.swatch);
+    applyTheme(sw.dataset.swatch);
+  });
+});
+
+const MODE_KEY = "billExplainerMode";
+const themeModeToggle = document.getElementById("themeModeToggle");
+const themeModeIconSun = document.getElementById("themeModeIconSun");
+const themeModeIconMoon = document.getElementById("themeModeIconMoon");
+
+function applyMode(mode) {
+  document.documentElement.setAttribute("data-mode", mode);
+  themeModeIconSun.style.display = mode === "dark" ? "none" : "block";
+  themeModeIconMoon.style.display = mode === "dark" ? "block" : "none";
+}
+applyMode(localStorage.getItem(MODE_KEY) || "light");
+themeModeToggle.addEventListener("click", () => {
+  const next = document.documentElement.getAttribute("data-mode") === "dark" ? "light" : "dark";
+  localStorage.setItem(MODE_KEY, next);
+  applyMode(next);
+});
+
+const SAMPLE_BILL_TEXT = `Riverbend Community Hospital
+Patient Billing Statement
+
+Date of Service: 08/01/2026
+Account #: 00482913
+
+Emergency Department Visit - Level 4        $1,240.00
+Complete Blood Count (CBC)                     $85.00
+Basic Metabolic Panel                          $95.00
+IV Fluids and Administration                  $210.00
+Chest X-Ray, 2 views                          $180.00
+Physician Interpretation Fee                   $75.00
+Facility Fee                                  $650.00
+
+Subtotal                                    $2,535.00
+Insurance Adjustment                       -$1,180.00
+Amount Due                                  $1,355.00
+
+Payment Due Date: 09/15/2026
+Questions about this bill? Call Patient Billing at (555) 019-2837.`;
+
+const SAMPLE_RESULT_TEXT = [
+  "## What kind of bill this is",
+  "This is an **emergency department visit** bill from Riverbend Community Hospital, covering a Level 4 ED visit with several diagnostic tests and a chest X-ray performed on August 1, 2026.",
+  "",
+  "## Charge breakdown",
+  "- **Emergency Department Visit (Level 4)** — $1,240.00 — the base fee for a moderately complex ER visit requiring several diagnostic tests",
+  "- **Complete Blood Count (CBC)** — $85.00 — a standard blood test panel",
+  "- **Basic Metabolic Panel** — $95.00 — checks kidney function, blood sugar, and electrolytes",
+  "- **IV Fluids and Administration** — $210.00 — cost of the IV bag plus the fee for administering it",
+  "- **Chest X-Ray, 2 views** — $180.00 — the imaging charge itself",
+  "- **Physician Interpretation Fee** — $75.00 — a separate charge for the doctor who read the X-ray",
+  "- **Facility Fee** — $650.00 — the hospital's overhead charge for using the ER, separate from any treatment",
+  "",
+  "## Insurance coverage likelihood",
+  "Based on the $1,180.00 insurance adjustment already applied, it looks like a claim was submitted and partially covered. The remaining **$1,355.00** is most likely your deductible and coinsurance share rather than a billing error — but the $650.00 facility fee is worth confirming against your plan's ER cost-sharing terms, since facility fees are a common source of surprise billing.",
+  "",
+  "## Worth double-checking",
+  "- Ask for an itemized bill if you haven't received one — this statement bundles the CBC and metabolic panel together, and itemized codes make it easier to spot duplicate charges",
+  "- Confirm whether the $75.00 physician interpretation fee for the X-ray was billed by a separate provider group — if so, you may get a second bill for the same reading",
+  "- Verify the insurance adjustment matches your Explanation of Benefits (EOB) from your insurer",
+  "",
+  "## Bottom line",
+  "You owe **$1,355.00** by September 15, 2026. The charges look like a typical Level 4 ER visit with imaging and labs — nothing jumps out as an obvious error, but it's worth requesting an itemized bill and comparing the facility fee against your plan's EOB before paying.",
+  "",
+  "## Dispute letter",
+  "To Whom It May Concern,",
+  "",
+  "I am writing regarding account #00482913 for services rendered on August 1, 2026 at Riverbend Community Hospital. I am requesting an itemized statement for this visit, including individual CPT codes for all charges, so that I can verify accuracy against my insurance Explanation of Benefits.",
+  "",
+  "In particular, I would like confirmation that the $650.00 facility fee and $75.00 physician interpretation fee were not also billed by a separate provider group, which would result in duplicate charges for the same service.",
+  "",
+  "Please send an itemized statement and hold this account from collections while this review is in progress.",
+  "",
+  "Sincerely,",
+  "[Your name]",
+  "",
+  "```json",
+  '{"category": "Medical", "amountOwed": 1355.00, "disputedAmount": 0, "dueDate": "2026-09-15"}',
+  "```"
+].join("\n");
+
+document.getElementById("sampleBillBtn").addEventListener("click", () => {
+  billText.value = SAMPLE_BILL_TEXT;
+  imageBase64 = null;
+  imageMediaType = null;
+  fileInput.value = "";
+  cameraFileInput.value = "";
+  preview.style.display = "none";
+  pdfPreviewEl.style.display = "none";
+  dropzoneText.style.display = "";
+  fileNameEl.textContent = "";
+
+  clearError();
+  const { cleanText, summary } = extractSummary(SAMPLE_RESULT_TEXT);
+  currentSummary = summary;
+  const sampleBadge = `<div class="sample-result-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>Sample result — paste your own bill above to try it for real</div>`;
+  resultEl.innerHTML = sampleBadge + renderMarkdownish(cleanText, "sample-");
+  resultCard.style.display = "block";
+  showReminderCard(summary);
+
+  resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+let imageBase64 = null;
+let imageMediaType = null;
+let currentSummary = null;
+
+const CATEGORIES = ["Medical", "Insurance", "Utility", "Other"];
+const TOKEN_KEY = "authToken";
+
+// In Electron the page loads from file://, so relative fetch() calls have no
+// host to resolve against — point those calls at the deployed Worker instead.
+// Browser/phone clients load index.html *from* the Worker already, so relative
+// paths there are same-origin.
+const ELECTRON_API_BASE = "https://bill-app.edward-d7e.workers.dev";
+const API_BASE = window.billAPI ? ELECTRON_API_BASE : "";
+
+let authToken = localStorage.getItem(TOKEN_KEY) || null;
+let cachedHistory = [];
+
+function loadHistory() {
+  return cachedHistory;
+}
+
+async function addHistoryEntry(category, amount, explanation, billSnippet, disputedAmount) {
+  if (!authToken) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/history`, {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${authToken}` },
+      body: JSON.stringify({ category, amount, explanation: explanation || null, billSnippet: billSnippet || null, disputedAmount: disputedAmount || 0 })
+    });
+    const data = await res.json();
+    if (res.ok) cachedHistory = data.history;
+  } catch {
+    // network error; entry just won't be synced this time
+  }
+  renderSpendingSummary();
+  renderHistoryList();
+}
+
+const accountTriggerBtn = document.getElementById("accountTriggerBtn");
+const accountPanel = document.getElementById("accountPanel");
+const accountTriggerWrap = document.getElementById("accountTriggerWrap");
+
+accountTriggerBtn.addEventListener("click", () => {
+  accountPanel.classList.toggle("open");
+});
+
+document.addEventListener("click", (e) => {
+  if (!accountTriggerWrap.contains(e.target)) {
+    accountPanel.classList.remove("open");
+  }
+});
+
+const spendingScreen = document.getElementById("spendingScreen");
+const insuranceScreen = document.getElementById("insuranceScreen");
+
+const historyScreen = document.getElementById("historyScreen");
+const historyDetailScreen = document.getElementById("historyDetailScreen");
+const historyListEl = document.getElementById("historyList");
+const historyDetailContentEl = document.getElementById("historyDetailContent");
+const historyHeroCountEl = document.getElementById("historyHeroCount");
+
+document.getElementById("openHistoryScreenBtn").addEventListener("click", () => {
+  accountPanel.classList.remove("open");
+  renderHistoryList();
+  historyScreen.classList.add("open");
+});
+document.getElementById("closeHistoryScreenBtn").addEventListener("click", () => {
+  historyScreen.classList.remove("open");
+});
+document.getElementById("closeHistoryDetailBtn").addEventListener("click", () => {
+  historyDetailScreen.classList.remove("open");
+});
+historyListEl.addEventListener("click", (e) => {
+  const card = e.target.closest("[data-history-index]");
+  if (!card) return;
+  const idx = parseInt(card.dataset.historyIndex, 10);
+  if (isNaN(idx) || !historyWithExplanation[idx]) return;
+  openHistoryDetail(historyWithExplanation[idx]);
+});
+
+let historyWithExplanation = [];
+
+function openHistoryDetail(entry) {
+  const date = new Date(entry.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  const cat = entry.category || "Other";
+  const color = CAT_COLOR[cat] || "#6b4fcc";
+  const bg = CAT_BG[cat] || "#f0eeff";
+  historyDetailContentEl.innerHTML = `
+    <div class="history-detail-header">
+      <div class="history-detail-icon" style="background:${bg};color:${color}">${CAT_ICONS[cat] || CAT_ICONS["Other"]}</div>
+      <div>
+        <div class="history-detail-cat" style="color:${color}">${escapeHtml(cat)}</div>
+        <div class="history-detail-meta">${date} &middot; $${entry.amount.toFixed(2)}</div>
+      </div>
+    </div>
+    <button class="secondary history-export-pdf-btn" type="button" style="width:100%;margin:14px 0 18px;display:flex;align-items:center;justify-content:center;gap:7px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export as PDF
+    </button>
+    ${renderMarkdownish(entry.explanation, "hist-")}
+  `;
+  historyDetailScreen.classList.add("open");
+}
+
+function renderHistoryList() {
+  historyWithExplanation = loadHistory().filter(h => h.explanation);
+  historyHeroCountEl.textContent = String(historyWithExplanation.length);
+
+  if (historyWithExplanation.length === 0) {
+    historyListEl.innerHTML = `<div class="spend-empty">No bills explained yet — explain a bill to see it here.</div>`;
+    return;
+  }
+
+  historyListEl.innerHTML = historyWithExplanation.map((entry, i) => {
+    const date = new Date(entry.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    const cat = entry.category || "Other";
+    const color = CAT_COLOR[cat] || "#6b4fcc";
+    const bg = CAT_BG[cat] || "#f0eeff";
+    const snippet = entry.billSnippet ? escapeHtml(entry.billSnippet.slice(0, 80)) : "";
+    return `<button class="bill-card" data-history-index="${i}" type="button">
+      <div class="bill-card-icon" style="background:${bg};color:${color}">${CAT_ICONS[cat] || CAT_ICONS["Other"]}</div>
+      <div class="bill-card-body">
+        <div class="bill-card-top">
+          <span class="bill-card-cat" style="color:${color}">${escapeHtml(cat)}</span>
+          <span class="bill-card-date">${date}</span>
+        </div>
+        <div class="bill-card-amount" style="color:${color}">$${entry.amount.toFixed(2)}</div>
+        ${snippet ? `<div class="bill-card-snippet">${snippet}</div>` : ""}
+      </div>
+      <div class="bill-card-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </button>`;
+  }).join("");
+}
+
+document.getElementById("openSpendingScreenBtn").addEventListener("click", () => {
+  accountPanel.classList.remove("open");
+  spendingScreen.classList.add("open");
+});
+document.getElementById("closeSpendingScreenBtn").addEventListener("click", () => {
+  spendingScreen.classList.remove("open");
+});
+document.getElementById("openInsuranceScreenBtn").addEventListener("click", () => {
+  accountPanel.classList.remove("open");
+  insuranceScreen.classList.add("open");
+});
+document.getElementById("closeInsuranceScreenBtn").addEventListener("click", () => {
+  insuranceScreen.classList.remove("open");
+});
+
+const accountLoggedOut = document.getElementById("accountLoggedOut");
+const accountLoggedIn = document.getElementById("accountLoggedIn");
+const accountUsernameEl = document.getElementById("accountUsername");
+const authErrorEl = document.getElementById("authError");
+const tabLogin = document.getElementById("tabLogin");
+const tabSignup = document.getElementById("tabSignup");
+const loginForm = document.getElementById("loginForm");
+const signupForm = document.getElementById("signupForm");
+
+tabLogin.addEventListener("click", () => {
+  tabLogin.classList.add("active");
+  tabSignup.classList.remove("active");
+  loginForm.style.display = "block";
+  signupForm.style.display = "none";
+  authErrorEl.innerHTML = "";
+});
+tabSignup.addEventListener("click", () => {
+  tabSignup.classList.add("active");
+  tabLogin.classList.remove("active");
+  signupForm.style.display = "block";
+  loginForm.style.display = "none";
+  authErrorEl.innerHTML = "";
+});
+
+function showAuthError(msg) {
+  authErrorEl.innerHTML = `<div class="error">${escapeHtml(msg)}</div>`;
+}
+
+function setLoggedIn(username) {
+  accountLoggedOut.style.display = "none";
+  accountLoggedIn.style.display = "block";
+  accountUsernameEl.textContent = username;
+}
+
+function setLoggedOut() {
+  authToken = null;
+  cachedHistory = [];
+  localStorage.removeItem(TOKEN_KEY);
+  accountLoggedOut.style.display = "block";
+  accountLoggedIn.style.display = "none";
+  insurancePlanEl.value = "";
+  renderSpendingSummary();
+  leaderboardScreen.classList.remove("open");
+  historyScreen.classList.remove("open");
+  historyDetailScreen.classList.remove("open");
+  spendingScreen.classList.remove("open");
+  insuranceScreen.classList.remove("open");
+  setAvatarImage(null);
+}
+
+document.getElementById("signupBtn").addEventListener("click", async () => {
+  authErrorEl.innerHTML = "";
+  const username = document.getElementById("signupUsername").value.trim();
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value;
+  try {
+    const res = await fetch(`${API_BASE}/api/signup`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ username, email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Couldn't create account.");
+    authToken = data.token;
+    localStorage.setItem(TOKEN_KEY, authToken);
+    setLoggedIn(data.username);
+    await refreshHistoryFromServer();
+    await loadInsurancePlan();
+    await loadAvatar();
+  } catch (err) {
+    showAuthError(err.message || "Couldn't create account.");
+  }
+});
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  authErrorEl.innerHTML = "";
+  const identifier = document.getElementById("loginIdentifier").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  try {
+    const res = await fetch(`${API_BASE}/api/login`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ identifier, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Couldn't log in.");
+    authToken = data.token;
+    localStorage.setItem(TOKEN_KEY, authToken);
+    setLoggedIn(data.username);
+    await refreshHistoryFromServer();
+    await loadInsurancePlan();
+    await loadAvatar();
+  } catch (err) {
+    showAuthError(err.message || "Couldn't log in.");
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  setLoggedOut();
+  renderSpendingSummary();
+});
+
+async function refreshHistoryFromServer() {
+  try {
+    const res = await fetch(`${API_BASE}/api/history`, {
+      headers: { authorization: `Bearer ${authToken}` }
+    });
+    if (res.status === 401) {
+      setLoggedOut();
+      return;
+    }
+    const data = await res.json();
+    if (res.ok) cachedHistory = data.history;
+  } catch {
+    // network error; keep whatever was already cached
+  }
+  renderSpendingSummary();
+  renderHistoryList();
+}
+
+const accountTriggerIcon = document.getElementById("accountTriggerIcon");
+const avatarPreview = document.getElementById("avatarPreview");
+const changePhotoBtn = document.getElementById("changePhotoBtn");
+const avatarFileInput = document.getElementById("avatarFileInput");
+const DEFAULT_AVATAR_ICON = accountTriggerIcon.outerHTML;
+const DEFAULT_AVATAR_PREVIEW = avatarPreview.innerHTML;
+
+function setAvatarImage(dataUrl) {
+  if (dataUrl) {
+    accountTriggerBtn.innerHTML = `<img src="${dataUrl}" alt="">`;
+    avatarPreview.innerHTML = `<img src="${dataUrl}" alt="">`;
+  } else {
+    accountTriggerBtn.innerHTML = DEFAULT_AVATAR_ICON;
+    avatarPreview.innerHTML = DEFAULT_AVATAR_PREVIEW;
+  }
+}
+
+async function loadAvatar() {
+  if (!authToken) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/avatar`, {
+      headers: { authorization: `Bearer ${authToken}` }
+    });
+    const data = await res.json();
+    if (res.ok) setAvatarImage(data.dataUrl || null);
+  } catch {
+    // network error; leave avatar as-is
+  }
+}
+
+changePhotoBtn.addEventListener("click", () => avatarFileInput.click());
+
+avatarFileInput.addEventListener("change", () => {
+  const file = avatarFileInput.files[0];
+  if (!file || !file.type.startsWith("image/")) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = async () => {
+      const size = 200;
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext("2d");
+      const scale = Math.max(size / img.width, size / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+
+      setAvatarImage(dataUrl);
+      if (!authToken) return;
+      try {
+        await fetch(`${API_BASE}/api/avatar`, {
+          method: "POST",
+          headers: { "content-type": "application/json", authorization: `Bearer ${authToken}` },
+          body: JSON.stringify({ dataUrl })
+        });
+      } catch {
+        // network error; photo stays local for this session
+      }
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+async function initAuth() {
+  if (!authToken) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/me`, {
+      headers: { authorization: `Bearer ${authToken}` }
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setLoggedOut();
+      return;
+    }
+    setLoggedIn(data.username);
+    await refreshHistoryFromServer();
+    await loadInsurancePlan();
+    await loadAvatar();
+  } catch {
+    // network error; leave the user logged out for this load
+  }
+}
+
+const insurancePlanEl = document.getElementById("insurancePlanText");
+const insuranceStatusEl = document.getElementById("insuranceStatus");
+const scanInsuranceBtn = document.getElementById("scanInsuranceBtn");
+const saveInsuranceBtn = document.getElementById("saveInsuranceBtn");
+const insuranceFileInput = document.getElementById("insuranceFileInput");
+
+function setInsuranceStatus(msg, saved) {
+  insuranceStatusEl.textContent = msg;
+  insuranceStatusEl.classList.toggle("saved", !!saved);
+}
+
+async function loadInsurancePlan() {
+  if (!authToken) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/insurance`, {
+      headers: { authorization: `Bearer ${authToken}` }
+    });
+    const data = await res.json();
+    if (res.ok) insurancePlanEl.value = data.text || "";
+  } catch {
+    // network error; leave field as-is
+  }
+}
+
+saveInsuranceBtn.addEventListener("click", async () => {
+  if (!authToken) return;
+  const text = insurancePlanEl.value.trim();
+  try {
+    const res = await fetch(`${API_BASE}/api/insurance`, {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${authToken}` },
+      body: JSON.stringify({ text })
+    });
+    if (!res.ok) throw new Error("Couldn't save.");
+    setInsuranceStatus("Saved — synced to your account.", true);
+  } catch {
+    setInsuranceStatus("Couldn't save right now.", false);
+  }
+});
+
+scanInsuranceBtn.addEventListener("click", () => insuranceFileInput.click());
+
+insuranceFileInput.addEventListener("change", async () => {
+  const file = insuranceFileInput.files[0];
+  if (!file) return;
+  const isPdf = file.type === "application/pdf";
+  if (!isPdf && !file.type.startsWith("image/")) {
+    setInsuranceStatus("Please choose an image or PDF file.", false);
+    return;
+  }
+
+  setInsuranceStatus("Reading your plan...", false);
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const dataUrl = reader.result;
+    const mediaType = file.type;
+    const base64 = dataUrl.split(",")[1];
+    try {
+      let result;
+      if (window.billAPI) {
+        result = await window.billAPI.extractInsurancePlan({ imageBase64: base64, imageMediaType: mediaType });
+      } else {
+        const res = await fetch(`${API_BASE}/api/insurance/extract`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ imageBase64: base64, imageMediaType: mediaType })
+        });
+        result = await res.json();
+      }
+      if (result.error) throw new Error(result.error);
+      insurancePlanEl.value = result.text;
+      setInsuranceStatus(`Extracted from ${isPdf ? "PDF" : "photo"} — review, then click Save plan.`, false);
+    } catch (err) {
+      setInsuranceStatus(err.message || `Couldn't read that ${isPdf ? "PDF" : "photo"}.`, false);
+    }
+  };
+  reader.readAsDataURL(file);
+});
+
+function extractSummary(rawText) {
+  const match = rawText.match(/```json\s*([\s\S]*?)```\s*$/i);
+  if (!match) return { cleanText: rawText, summary: null };
+
+  const cleanText = rawText.slice(0, match.index).trim();
+  try {
+    const parsed = JSON.parse(match[1].trim());
+    if (CATEGORIES.includes(parsed.category) && typeof parsed.amountOwed === "number") {
+      return { cleanText, summary: {
+        category: parsed.category,
+        amountOwed: parsed.amountOwed,
+        disputedAmount: typeof parsed.disputedAmount === "number" ? parsed.disputedAmount : 0,
+        dueDate: typeof parsed.dueDate === "string" ? parsed.dueDate : null
+      }};
+    }
+  } catch {
+    // model didn't return valid JSON; just show the explanation without tracking it
+  }
+  return { cleanText, summary: null };
+}
+
+const CAT_ICONS = {
+  "Medical": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>`,
+  "Insurance": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  "Utility": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
+  "Other": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
+};
+const CAT_BG = { "Medical": "#e8f0fe", "Insurance": "#e7f8f0", "Utility": "#fdf1e6", "Other": "#f0eeff" };
+const CAT_COLOR = { "Medical": "#3a56d8", "Insurance": "#1f9d6c", "Utility": "#c2702f", "Other": "#6b4fcc" };
+
+function renderSpendingSummary() {
+  const heroTotalEl = document.getElementById("spendingHeroTotal");
+  const setHeroTotal = (val) => { if (heroTotalEl) heroTotalEl.textContent = val; };
+
+  if (!authToken) {
+    setHeroTotal("$0.00");
+    spendingSummaryEl.innerHTML = `<div class="spend-empty">Log in to track spending by category.</div>`;
+    return;
+  }
+
+  const history = loadHistory();
+
+  if (history.length === 0) {
+    setHeroTotal("$0.00");
+    spendingSummaryEl.innerHTML = `<div class="spend-empty">No bills tracked yet — explain a bill to start seeing totals here.</div>`;
+    return;
+  }
+
+  const totals = {};
+  for (const cat of CATEGORIES) totals[cat] = 0;
+  for (const entry of history) {
+    if (totals[entry.category] !== undefined) totals[entry.category] += entry.amount;
+  }
+  const grandTotal = Object.values(totals).reduce((a, b) => a + b, 0);
+  const maxCat = Math.max(...Object.values(totals), 1);
+
+  setHeroTotal(`$${grandTotal.toFixed(2)}`);
+
+  const cards = CATEGORIES.map(cat => {
+    const amount = totals[cat];
+    const pct = maxCat > 0 ? (amount / maxCat) * 100 : 0;
+    const color = CAT_COLOR[cat];
+    return `<div class="cat-card">
+      <div class="cat-card-icon-wrap" style="background:${CAT_BG[cat]};color:${color}">${CAT_ICONS[cat]}</div>
+      <div class="cat-card-name">${escapeHtml(cat)}</div>
+      <div class="cat-card-amount" style="color:${amount > 0 ? color : "var(--muted)"}">$${amount.toFixed(2)}</div>
+      <div class="cat-card-bar"><div class="cat-card-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+    </div>`;
+  }).join("");
+
+  spendingSummaryEl.innerHTML = `
+    <div class="cat-grid">${cards}</div>
+    <button class="spend-reset" id="resetHistoryBtn" type="button">Reset spending history</button>
+  `;
+
+  document.getElementById("resetHistoryBtn").addEventListener("click", async () => {
+    if (!authToken) return;
+    try {
+      const res = await fetch(`${API_BASE}/api/history/reset`, {
+        method: "POST",
+        headers: { authorization: `Bearer ${authToken}` }
+      });
+      const data = await res.json();
+      if (res.ok) cachedHistory = data.history;
+    } catch {
+      // network error; nothing more to do
+    }
+    renderSpendingSummary();
+  });
+}
+
+renderSpendingSummary();
+initAuth();
+
+const takePhotoBtn = document.getElementById("takePhotoBtn");
+const cameraOverlay = document.getElementById("cameraOverlay");
+const cameraVideo = document.getElementById("cameraVideo");
+const cameraCanvas = document.getElementById("cameraCanvas");
+const cameraError = document.getElementById("cameraError");
+const cameraCancelBtn = document.getElementById("cameraCancelBtn");
+const cameraCaptureBtn = document.getElementById("cameraCaptureBtn");
+const cameraRetakeBtn = document.getElementById("cameraRetakeBtn");
+const cameraUseBtn = document.getElementById("cameraUseBtn");
+const cameraFileInput = document.getElementById("cameraFileInput");
+
+let cameraStream = null;
+
+cameraFileInput.addEventListener("change", () => {
+  if (cameraFileInput.files.length) handleFile(cameraFileInput.files[0]);
+});
+
+async function openCamera() {
+  // getUserMedia needs a secure context (https or localhost). When this page
+  // is loaded over plain http on a phone's LAN address, fall back to the
+  // device's native camera app via the file input's capture attribute.
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.isSecureContext) {
+    cameraFileInput.click();
+    return;
+  }
+
+  cameraError.textContent = "";
+  cameraOverlay.classList.add("visible");
+  cameraVideo.style.display = "block";
+  cameraCanvas.style.display = "none";
+  cameraCaptureBtn.style.display = "block";
+  cameraRetakeBtn.style.display = "none";
+  cameraUseBtn.style.display = "none";
+
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" }
+    });
+    cameraVideo.srcObject = cameraStream;
+  } catch (err) {
+    closeCamera();
+    cameraFileInput.click();
+  }
+}
+
+function closeCamera() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(track => track.stop());
+    cameraStream = null;
+  }
+  cameraOverlay.classList.remove("visible");
+}
+
+takePhotoBtn.addEventListener("click", openCamera);
+cameraCancelBtn.addEventListener("click", closeCamera);
+
+cameraCaptureBtn.addEventListener("click", () => {
+  cameraCanvas.width = cameraVideo.videoWidth;
+  cameraCanvas.height = cameraVideo.videoHeight;
+  cameraCanvas.getContext("2d").drawImage(cameraVideo, 0, 0);
+
+  cameraVideo.style.display = "none";
+  cameraCanvas.style.display = "block";
+  cameraCaptureBtn.style.display = "none";
+  cameraRetakeBtn.style.display = "block";
+  cameraUseBtn.style.display = "block";
+});
+
+cameraRetakeBtn.addEventListener("click", () => {
+  cameraVideo.style.display = "block";
+  cameraCanvas.style.display = "none";
+  cameraCaptureBtn.style.display = "block";
+  cameraRetakeBtn.style.display = "none";
+  cameraUseBtn.style.display = "none";
+});
+
+cameraUseBtn.addEventListener("click", () => {
+  const dataUrl = cameraCanvas.toDataURL("image/jpeg", 0.92);
+  imageMediaType = "image/jpeg";
+  imageBase64 = dataUrl.split(",")[1];
+  preview.src = dataUrl;
+  preview.style.display = "block";
+  pdfPreviewEl.style.display = "none";
+  dropzoneText.style.display = "none";
+  fileNameEl.textContent = "Captured photo";
+  closeCamera();
+});
+
+dropzone.addEventListener("click", () => fileInput.click());
+dropzone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropzone.classList.add("dragover");
+});
+dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
+dropzone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropzone.classList.remove("dragover");
+  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener("change", () => {
+  if (fileInput.files.length) handleFile(fileInput.files[0]);
+});
+
+function handleFile(file) {
+  const isPdf = file.type === "application/pdf";
+  if (!isPdf && !file.type.startsWith("image/")) {
+    showError("Please choose an image or PDF file.");
+    return;
+  }
+  imageMediaType = file.type;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const dataUrl = reader.result;
+    imageBase64 = dataUrl.split(",")[1];
+    if (isPdf) {
+      preview.style.display = "none";
+      pdfPreviewEl.style.display = "flex";
+    } else {
+      preview.src = dataUrl;
+      preview.style.display = "block";
+      pdfPreviewEl.style.display = "none";
+    }
+    dropzoneText.style.display = "none";
+    fileNameEl.textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+function showError(msg) {
+  errorBox.innerHTML = `<div class="error">${escapeHtml(msg)}</div>`;
+}
+
+function clearError() {
+  errorBox.innerHTML = "";
+}
+
+function escapeHtml(s) {
+  const div = document.createElement("div");
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+const SECTION_CLASS = {
+  "What kind of bill this is": "section-type",
+  "Charge breakdown": "section-type",
+  "Insurance coverage likelihood": "section-coverage",
+  "What changed since last bill": "section-changed",
+  "Worth double-checking": "section-flag",
+  "Bottom line": "section-bottom",
+  "Dispute letter": "section-dispute"
+};
+
+function formatBody(body) {
+  let html = escapeHtml(body);
+  html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+  html = html.replace(/^- (.*)$/gm, "<li>$1</li>");
+  html = html.replace(/(<li>.*<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`);
+  return html.split(/\n{2,}/).map(block => {
+    if (block.startsWith("<ul>")) return block;
+    return `<p>${block.replace(/\n/g, "<br>")}</p>`;
+  }).join("\n");
+}
+
+function renderMarkdownish(text, idPrefix = "") {
+  // Group into sections by ## headers, keeping each section's raw body text
+  // intact so the dispute letter can be copied exactly as written.
+  const sections = [];
+  let current = null;
+  for (const line of text.split("\n")) {
+    const headerMatch = line.match(/^## (.*)$/);
+    if (headerMatch) {
+      if (current) sections.push(current);
+      current = { title: headerMatch[1].trim(), lines: [] };
+    } else if (current) {
+      current.lines.push(line);
+    } else {
+      current = { title: "", lines: [line] };
+    }
+  }
+  if (current) sections.push(current);
+
+  return sections.map((s, i) => {
+    const body = s.lines.join("\n").trim();
+    const cls = SECTION_CLASS[s.title] || "section-type";
+
+    if (s.title === "Dispute letter") {
+      const copyId = `dispute-letter-${idPrefix}${i}`;
+      return `<div class="section-block ${cls}">
+        <h2>${escapeHtml(s.title)}<button class="copy-btn" data-copy-target="${copyId}" type="button">Copy</button></h2>
+        <pre id="${copyId}">${escapeHtml(body)}</pre>
+      </div>`;
+    }
+
+    return `<div class="section-block ${cls}"><h2>${escapeHtml(s.title)}</h2>${formatBody(body)}</div>`;
+  }).join("\n");
+}
+
+function exportAsPdf(el) {
+  const overlay = el.closest(".fullscreen-overlay");
+  if (overlay) overlay.classList.add("pdf-export-overlay");
+  el.classList.add("pdf-export-target");
+  window.print();
+  el.classList.remove("pdf-export-target");
+  if (overlay) overlay.classList.remove("pdf-export-overlay");
+}
+
+document.getElementById("exportPdfBtn").addEventListener("click", () => {
+  exportAsPdf(resultCard);
+});
+
+document.addEventListener("click", async (e) => {
+  const exportBtn = e.target.closest(".history-export-pdf-btn");
+  if (exportBtn) {
+    exportAsPdf(historyDetailContentEl);
+    return;
+  }
+
+  const btn = e.target.closest(".copy-btn");
+  if (!btn) return;
+  const target = document.getElementById(btn.dataset.copyTarget);
+  if (!target) return;
+  try {
+    await navigator.clipboard.writeText(target.textContent);
+    const original = btn.textContent;
+    btn.textContent = "Copied";
+    setTimeout(() => (btn.textContent = original), 1200);
+  } catch {
+    // clipboard API unavailable; nothing further to do
+  }
+});
+
+// leaderboard
+const leaderboardScreen = document.getElementById("leaderboardScreen");
+const leaderboardListEl = document.getElementById("leaderboardList");
+
+document.getElementById("openLeaderboardScreenBtn").addEventListener("click", () => {
+  accountPanel.classList.remove("open");
+  leaderboardScreen.classList.add("open");
+  loadLeaderboard();
+});
+document.getElementById("closeLeaderboardScreenBtn").addEventListener("click", () => {
+  leaderboardScreen.classList.remove("open");
+});
+
+async function loadLeaderboard() {
+  leaderboardListEl.innerHTML = `<div class="lb-empty">Loading...</div>`;
+  try {
+    const res = await fetch(`${API_BASE}/api/leaderboard`);
+    const data = await res.json();
+    if (!res.ok) return;
+    renderLeaderboard(data.leaderboard || []);
+  } catch {
+    leaderboardListEl.innerHTML = `<div class="lb-empty">Couldn't load leaderboard.</div>`;
+  }
+}
+
+function renderLeaderboard(entries) {
+  if (!entries.length) {
+    leaderboardListEl.innerHTML = `<div class="lb-empty">No disputes yet — be the first to fight a bad bill.</div>`;
+    return;
+  }
+  const rankClass = ["gold", "silver", "bronze"];
+  const rankLabel = ["1st", "2nd", "3rd"];
+  leaderboardListEl.innerHTML = entries.map((e, i) => {
+    const cls = rankClass[i] || "";
+    const label = rankLabel[i] || `${i + 1}th`;
+    return `<div class="lb-row">
+      <span class="lb-rank ${cls}">${label}</span>
+      <span class="lb-user">${escapeHtml(e.username)}</span>
+      <span class="lb-disputed">$${Number(e.total_disputed).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} disputed</span>
+    </div>`;
+  }).join("");
+}
+
+explainBtn.addEventListener("click", async () => {
+  clearError();
+  const text = billText.value.trim();
+  if (!imageBase64 && !text) {
+    showError("Upload a photo of the bill or paste the bill text.");
+    return;
+  }
+
+  if (!window.billAPI && !authToken) {
+    showError("Log in to explain a bill.");
+    accountPanel.classList.add("open");
+    return;
+  }
+
+  explainBtn.disabled = true;
+  statusEl.classList.add("visible");
+  resultCard.style.display = "none";
+  reminderCard.style.display = "none";
+  reminderStatus.textContent = "";
+
+  try {
+    const insurancePlanText = insurancePlanEl.value.trim();
+    let result;
+    if (window.billAPI) {
+      result = await window.billAPI.explain({ text, imageBase64, imageMediaType, insurancePlanText });
+    } else {
+      const res = await fetch(`${API_BASE}/api/explain`, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${authToken}` },
+        body: JSON.stringify({ text, imageBase64, imageMediaType, insurancePlanText })
+      });
+      result = await res.json();
+    }
+
+    if (result.error) {
+      throw new Error(result.error);
+    }
+
+    const { cleanText, summary } = extractSummary(result.text);
+    currentSummary = summary;
+    resultEl.innerHTML = renderMarkdownish(cleanText);
+    resultCard.style.display = "block";
+    showReminderCard(summary);
+
+    if (window.billAPI && summary) {
+      // Electron: explain happened via IPC (no server save), so client must save
+      const billSnippet = text.slice(0, 200).trim();
+      await addHistoryEntry(summary.category, summary.amountOwed, cleanText, billSnippet, summary.disputedAmount || 0);
+    } else if (!window.billAPI) {
+      // Web: server auto-saved in /api/explain, just refresh
+      await refreshHistoryFromServer();
+    }
+  } catch (err) {
+    showError(err.message || "Something went wrong.");
+  } finally {
+    explainBtn.disabled = false;
+    statusEl.classList.remove("visible");
+  }
+});
+
+// ── Reminder card ────────────────────────────────────────────────────────────
+
+function showReminderCard(summary) {
+  if (!summary?.dueDate) {
+    reminderCard.style.display = "none";
+    return;
+  }
+  const due = new Date(summary.dueDate + "T12:00:00Z");
+  dueDateDisplay.textContent = due.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+
+  const threeDaysBefore = new Date(due);
+  threeDaysBefore.setDate(threeDaysBefore.getDate() - 3);
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const defaultStr = threeDaysBefore.toISOString().slice(0, 10);
+  reminderDateInput.min = todayStr;
+  reminderDateInput.value = defaultStr >= todayStr ? defaultStr : todayStr;
+
+  emailReminderBtn.style.display = authToken ? "" : "none";
+  reminderStatus.textContent = "";
+  reminderStatus.className = "reminder-status";
+  reminderCard.style.display = "block";
+}
+
+browserReminderBtn.addEventListener("click", async () => {
+  const dateVal = reminderDateInput.value;
+  if (!dateVal) return;
+
+  if (!("Notification" in window)) {
+    setReminderStatus("Your browser doesn't support notifications.", false);
+    return;
+  }
+  let perm = Notification.permission;
+  if (perm === "default") perm = await Notification.requestPermission();
+  if (perm !== "granted") {
+    setReminderStatus("Notification permission denied — check your browser settings.", false);
+    return;
+  }
+
+  const reminderAt = dateVal + "T09:00:00";
+  const stored = JSON.parse(localStorage.getItem("billReminders") || "[]");
+  stored.push({
+    id: crypto.randomUUID(),
+    billLabel: currentSummary?.category ? `${currentSummary.category} bill` : "bill",
+    amountOwed: currentSummary?.amountOwed ?? null,
+    dueDate: currentSummary?.dueDate ?? null,
+    reminderAt,
+    notified: false
+  });
+  localStorage.setItem("billReminders", JSON.stringify(stored));
+
+  const displayDate = new Date(reminderAt).toLocaleDateString("en-US", { month: "long", day: "numeric" });
+  setReminderStatus(`Browser reminder set for ${displayDate} at 9 am.`, true);
+});
+
+emailReminderBtn.addEventListener("click", async () => {
+  const dateVal = reminderDateInput.value;
+  if (!dateVal || !authToken) return;
+  emailReminderBtn.disabled = true;
+  try {
+    const res = await fetch(`${API_BASE}/api/reminders`, {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${authToken}` },
+      body: JSON.stringify({
+        reminderDate: dateVal,
+        billLabel: currentSummary?.category ? `${currentSummary.category} bill` : "bill",
+        amountOwed: currentSummary?.amountOwed ?? null,
+        dueDate: currentSummary?.dueDate ?? null
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to set reminder");
+    const displayDate = new Date(dateVal + "T12:00:00Z").toLocaleDateString("en-US", { month: "long", day: "numeric" });
+    setReminderStatus(`Email reminder set — we'll email you on ${displayDate}.`, true);
+  } catch (err) {
+    setReminderStatus(err.message, false);
+  } finally {
+    emailReminderBtn.disabled = false;
+  }
+});
+
+function setReminderStatus(msg, ok) {
+  reminderStatus.textContent = msg;
+  reminderStatus.className = "reminder-status " + (ok ? "ok" : "err");
+}
+
+// Check browser reminders on page load
+(function checkPendingReminders() {
+  try {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    const stored = JSON.parse(localStorage.getItem("billReminders") || "[]");
+    const now = Date.now();
+    let changed = false;
+    for (const r of stored) {
+      if (!r.notified && new Date(r.reminderAt).getTime() <= now) {
+        const body = [
+          r.billLabel,
+          r.amountOwed != null ? `$${Number(r.amountOwed).toFixed(2)} due` : null,
+          r.dueDate ? `Due ${new Date(r.dueDate + "T12:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric" })}` : null
+        ].filter(Boolean).join(" · ");
+        new Notification("Bill payment reminder", { body, icon: "/icon.svg" });
+        r.notified = true;
+        changed = true;
+      }
+    }
+    if (changed) localStorage.setItem("billReminders", JSON.stringify(stored));
+  } catch {}
+})();
+</script>
+</body>
+</html>

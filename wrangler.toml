@@ -1,0 +1,17 @@
+name = "bill-app"
+main = "worker.js"
+compatibility_date = "2026-06-17"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "."
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bill_app_db"
+database_id = "29a4c167-a988-4309-b2b2-45ccab69c647"
+
+[triggers]
+crons = ["0 13 * * *"]

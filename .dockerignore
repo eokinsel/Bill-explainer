@@ -1,0 +1,8 @@
+node_modules
+dist
+icon.iconset
+icon.svg
+*.icns
+main.js
+preload.js
+.git

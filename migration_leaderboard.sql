@@ -1,0 +1,1 @@
+ALTER TABLE history ADD COLUMN disputed_amount REAL NOT NULL DEFAULT 0;

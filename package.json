@@ -1,0 +1,18 @@
+{
+  "name": "bill-explainer",
+  "version": "1.0.0",
+  "description": "A billing explainer desktop app powered by Claude",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "serve": "node server.js",
+    "package": "electron-packager . \"Bill Explainer\" --platform=darwin --arch=arm64 --icon=icon.icns --out=dist --overwrite --app-bundle-id=com.edward.billexplainer"
+  },
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "stripe": "^22.2.1"
+  }
+}
