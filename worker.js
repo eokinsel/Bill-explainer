@@ -3,7 +3,7 @@ import Stripe from "stripe";
 const MODEL = "claude-opus-4-8";
 const CATEGORIES = ["Medical", "Insurance", "Utility", "Other"];
 
-const FREE_MONTHLY_LIMIT = 1;
+const FREE_YEARLY_LIMIT = 1;
 const PREMIUM_PRICE_CENTS = 500;
 
 // TEMP: premium disabled, everything is free for all users.
@@ -313,31 +313,31 @@ function isActiveStatus(status) {
   return FORCE_ALL_PREMIUM || status === "active" || status === "trialing";
 }
 
-function currentMonthKey() {
-  const d = new Date();
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+// Free usage resets each calendar year. Stored in the legacy `usage_month` column.
+function currentUsageKey() {
+  return String(new Date().getUTCFullYear());
 }
 
 async function getUsageCount(db, userId) {
   const row = await db.prepare("SELECT usage_month, usage_count FROM users WHERE id = ?").bind(userId).first();
-  if (!row || row.usage_month !== currentMonthKey()) return 0;
+  if (!row || row.usage_month !== currentUsageKey()) return 0;
   return row.usage_count;
 }
 
-// Consumes one of the free monthly summaries. Returns false if the monthly limit is already used.
+// Consumes one of the free yearly summaries. Returns false if the yearly limit is already used.
 async function consumeFreeUsage(db, userId) {
-  const month = currentMonthKey();
+  const period = currentUsageKey();
   const row = await db.prepare("SELECT usage_month, usage_count FROM users WHERE id = ?").bind(userId).first();
-  const count = row && row.usage_month === month ? row.usage_count : 0;
-  if (count >= FREE_MONTHLY_LIMIT) return false;
-  await db.prepare("UPDATE users SET usage_month = ?, usage_count = ? WHERE id = ?").bind(month, count + 1, userId).run();
+  const count = row && row.usage_month === period ? row.usage_count : 0;
+  if (count >= FREE_YEARLY_LIMIT) return false;
+  await db.prepare("UPDATE users SET usage_month = ?, usage_count = ? WHERE id = ?").bind(period, count + 1, userId).run();
   return true;
 }
 
 async function refundFreeUsage(db, userId) {
-  const month = currentMonthKey();
+  const period = currentUsageKey();
   const row = await db.prepare("SELECT usage_month, usage_count FROM users WHERE id = ?").bind(userId).first();
-  if (row && row.usage_month === month && row.usage_count > 0) {
+  if (row && row.usage_month === period && row.usage_count > 0) {
     await db.prepare("UPDATE users SET usage_count = ? WHERE id = ?").bind(row.usage_count - 1, userId).run();
   }
 }
@@ -531,7 +531,7 @@ export default {
         const allowed = await consumeFreeUsage(env.DB, userId);
         if (!allowed) {
           return json(403, {
-            error: `You've used your free bill summary for this month. Upgrade to Premium for unlimited summaries plus insurance matching, dispute letters, and spending tracking.`,
+            error: `You've used your free bill summary for this year. Upgrade to Premium for unlimited summaries plus insurance matching, dispute letters, and spending tracking.`,
             needsSubscription: true
           });
         }
@@ -687,7 +687,7 @@ export default {
       return json(200, {
         status: sub.status,
         periodEnd: sub.periodEnd,
-        usage: { count: usageCount, limit: FREE_MONTHLY_LIMIT }
+        usage: { count: usageCount, limit: FREE_YEARLY_LIMIT }
       });
     }
 

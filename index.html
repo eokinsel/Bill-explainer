@@ -990,7 +990,7 @@
 <div class="modal-overlay" id="upgradeNudgeModal">
   <div class="modal-card">
     <button class="modal-close-btn" id="closeUpgradeNudgeBtn" type="button" aria-label="Close">&times;</button>
-    <h3>That was your free summary for this month</h3>
+    <h3>That was your free summary for this year</h3>
     <p>Upgrade to Premium for unlimited bill summaries, insurance matching, dispute letters, and spending tracking.</p>
     <button class="premium-cta-btn" id="upgradeNudgeBtn" type="button">
       <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
@@ -1032,7 +1032,7 @@
     <ul class="feature-list">
       <li>
         <span class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-        <span><strong>Unlimited bill summaries</strong> — no monthly cap, explain as many as you need</span>
+        <span><strong>Unlimited bill summaries</strong> — no yearly cap, explain as many as you need</span>
       </li>
       <li>
         <span class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
@@ -1677,7 +1677,7 @@ function renderSubscriptionUI() {
 
   premiumStatusLineEl.textContent = subscribed
     ? `Premium active${reallySubscribed && subscriptionPeriodEnd ? " — renews " + new Date(subscriptionPeriodEnd).toLocaleDateString() : ""}.`
-    : `Free plan — ${remaining === 1 ? "1 free bill summary left" : remaining === 0 ? "no free bill summaries left" : `${remaining} free bill summaries left`} this month.`;
+    : `Free plan — ${remaining === 1 ? "1 free bill summary left" : remaining === 0 ? "no free bill summaries left" : `${remaining} free bill summaries left`} this year.`;
 
   upgradeBtn.style.display = subscribed ? "none" : "block";
   manageSubscriptionBtn.style.display = reallySubscribed ? "block" : "none";
