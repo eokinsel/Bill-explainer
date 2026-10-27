@@ -297,6 +297,44 @@
   }
   .panel-nav-btn svg { width: 16px; height: 16px; color: var(--muted); }
 
+  .premium-status-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 14.5px;
+    font-weight: 700;
+    padding: 13px 14px;
+    border-radius: 12px;
+  }
+
+  .premium-cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 0;
+    background: #ffc800;
+    border: none;
+    border-bottom: 4px solid #e5a700;
+    color: #4b3300;
+    font-size: 14.5px;
+    font-weight: 800;
+    padding: 13px 14px;
+    border-radius: 12px;
+    box-shadow: none;
+    transition: transform 0.1s, filter 0.15s;
+  }
+  .premium-cta-btn svg { width: 17px; height: 17px; color: #4b3300; }
+  .premium-cta-btn:hover:not(:disabled) { filter: brightness(1.04); transform: translateY(-1px); }
+  .premium-cta-btn:active:not(:disabled) { transform: translateY(1px); border-bottom-width: 2px; }
+
   /* landing page */
   .simplify-cta-btn {
     position: fixed;
@@ -375,6 +413,21 @@
   .modal-card h3 { margin: 0 0 8px; font-size: 16px; }
   .modal-card p { margin: 0 0 16px; font-size: 13.5px; color: var(--muted); }
 
+  .premium-status-line { font-size: 14px; margin: 0 0 4px; font-weight: 600; }
+  .premium-hint { font-size: 13px; color: var(--muted); margin: 0 0 18px; }
+  .price-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .price-card .price-name { font-size: 15px; font-weight: 600; }
+  .price-card .price-amount { font-size: 17px; font-weight: 700; color: var(--accent-dark); }
+  .locked-feature { text-align: center; padding: 30px 10px; color: var(--muted); }
+  .locked-feature p { margin: 0 0 16px; font-size: 14px; }
 
   .fullscreen-overlay {
     display: none;
@@ -729,6 +782,11 @@
   .insurance-screen-hero .back-btn { color: rgba(255,255,255,0.8); }
   .insurance-screen-hero .back-btn:hover { color: white; }
 
+  /* premium: amber/gold */
+  .premium-screen-hero { background: linear-gradient(140deg, #b87000, #e9a500); color: white; }
+  .premium-screen-hero .back-btn { color: rgba(255,255,255,0.8); }
+  .premium-screen-hero .back-btn:hover { color: white; }
+
   /* category cards (spending screen) */
   .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
   @media (max-width: 380px) { .cat-grid { grid-template-columns: 1fr; } }
@@ -750,6 +808,36 @@
   .cat-card-amount { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 8px; }
   .cat-card-bar { height: 4px; border-radius: 3px; background: var(--border); overflow: hidden; }
   .cat-card-bar-fill { height: 100%; border-radius: 3px; }
+
+  /* feature list (premium screen) */
+  .feature-list { list-style: none; padding: 0; margin: 0 0 20px; display: flex; flex-direction: column; gap: 10px; }
+  .feature-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.4; }
+  .feat-check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--good-soft);
+    border: 1px solid #c9ecdb;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .feat-check svg { width: 10px; height: 10px; color: var(--good); }
+
+  /* 2-minute upgrade modal */
+  .timer-nudge-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff8e0;
+    border: 1px solid #f5d66a;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #7a5500;
+    margin-bottom: 12px;
+  }
+  .timer-nudge-badge svg { width: 12px; height: 12px; color: #f0aa00; }
 
   /* history screen */
   .history-screen-hero { background: linear-gradient(140deg, #1e2a3a, #2b3d56); color: white; }
@@ -848,7 +936,7 @@
         <input type="password" id="signupPassword" placeholder="At least 8 characters">
         <button id="signupBtn" type="button" style="margin-top:14px">Create account</button>
       </div>
-      <div class="auth-hint">Log in to save your bill history, match charges against your insurance plan, and track spending over time.</div>
+      <div class="auth-hint">Log in — your first bill summary each month is free. Upgrade to Premium for unlimited summaries plus insurance matching, dispute letters, and spending tracking.</div>
       <div id="authError"></div>
     </div>
     <div id="accountLoggedIn" style="display:none">
@@ -863,6 +951,14 @@
         <span>Logged in as <strong id="accountUsername"></strong></span>
         <button class="secondary" id="logoutBtn" type="button">Log out</button>
       </div>
+
+      <button class="premium-status-btn" id="openPremiumScreenBtn" type="button">
+        <span id="premiumNavLabel">Free plan</span>
+      </button>
+      <button class="premium-cta-btn" id="goldPremiumBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+        <span>Upgrade to Premium</span>
+      </button>
 
       <div class="panel-nav">
         <button class="panel-nav-btn" id="openLeaderboardScreenBtn" type="button">
@@ -891,6 +987,76 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
 </button>
 
+<div class="modal-overlay" id="upgradeNudgeModal">
+  <div class="modal-card">
+    <button class="modal-close-btn" id="closeUpgradeNudgeBtn" type="button" aria-label="Close">&times;</button>
+    <h3>That was your free summary for this month</h3>
+    <p>Upgrade to Premium for unlimited bill summaries, insurance matching, dispute letters, and spending tracking.</p>
+    <button class="premium-cta-btn" id="upgradeNudgeBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+      <span>Upgrade to Premium — $5/mo</span>
+    </button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="timerNudgeModal">
+  <div class="modal-card">
+    <button class="modal-close-btn" id="closeTimerNudgeBtn" type="button" aria-label="Close">&times;</button>
+    <div class="timer-nudge-badge">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+      Premium
+    </div>
+    <h3 style="margin-top:0">Make the most of Bill Explainer</h3>
+    <p>Get unlimited summaries, insurance coverage matching, dispute letters, and a spending tracker — all for $5/mo.</p>
+    <button class="premium-cta-btn" id="timerNudgeUpgradeBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+      <span>Upgrade to Premium — $5/mo</span>
+    </button>
+  </div>
+</div>
+
+<div class="fullscreen-overlay" id="premiumScreen">
+  <div class="screen-hero premium-screen-hero">
+    <button class="back-btn" id="closePremiumScreenBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <div class="screen-hero-icon">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+    </div>
+    <h2>Premium</h2>
+    <p>Everything you need to understand and fight your bills</p>
+  </div>
+  <div class="fullscreen-inner">
+    <p class="premium-status-line" id="premiumStatusLine" style="font-size:14px;font-weight:600;margin:0 0 16px;color:var(--muted)"></p>
+    <ul class="feature-list">
+      <li>
+        <span class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span><strong>Unlimited bill summaries</strong> — no monthly cap, explain as many as you need</span>
+      </li>
+      <li>
+        <span class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span><strong>Insurance coverage matching</strong> — see what your plan actually covers on each charge</span>
+      </li>
+      <li>
+        <span class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span><strong>Dispute letter generator</strong> — fight billing errors with a ready-to-send letter</span>
+      </li>
+      <li>
+        <span class="feat-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span><strong>Spending tracker</strong> — see where your money goes, broken down by category</span>
+      </li>
+    </ul>
+    <div class="price-card">
+      <span class="price-name">Bill Explainer Premium</span>
+      <span class="price-amount">$5/mo</span>
+    </div>
+    <button id="upgradeBtn" type="button">Upgrade — $5/mo</button>
+    <button class="secondary" id="manageSubscriptionBtn" type="button" style="margin-top:10px; display:none">Manage subscription</button>
+    <div class="insurance-status" id="premiumStatus"></div>
+  </div>
+</div>
+
 <div class="fullscreen-overlay" id="spendingScreen">
   <div class="screen-hero spending-screen-hero">
     <button class="back-btn" id="closeSpendingScreenBtn" type="button">
@@ -901,6 +1067,10 @@
     <div class="spending-total-label">Total tracked spending</div>
   </div>
   <div class="fullscreen-inner">
+    <div class="locked-feature" id="spendingLocked" style="display:none">
+      <p>You need the Premium subscription to use this feature.</p>
+      <button id="spendingUpgradeBtn" type="button">Upgrade — $5/mo</button>
+    </div>
     <div id="spendingContent">
       <div id="spendingSummary"></div>
     </div>
@@ -920,6 +1090,10 @@
     <p>Save your coverage details for personalized bill analysis</p>
   </div>
   <div class="fullscreen-inner">
+    <div class="locked-feature" id="insuranceLocked" style="display:none">
+      <p>You need the Premium subscription to use this feature.</p>
+      <button id="insuranceUpgradeBtn" type="button">Upgrade — $5/mo</button>
+    </div>
     <div id="insuranceContent">
       <label for="insurancePlanText">Coverage details (deductible, copay, exclusions, etc.)</label>
       <textarea id="insurancePlanText" placeholder="Paste details from your insurance plan here, or upload a photo or PDF of it below..." style="min-height: 90px;"></textarea>
@@ -960,6 +1134,10 @@
     <div class="history-hero-label">Bills explained</div>
   </div>
   <div class="fullscreen-inner">
+    <div class="locked-feature" id="historyLocked" style="display:none">
+      <p>You need the Premium subscription to use this feature.</p>
+      <button id="historyUpgradeBtn" type="button">Upgrade — $5/mo</button>
+    </div>
     <div id="historyContent">
       <div id="historyList"></div>
     </div>
@@ -1327,6 +1505,8 @@ const insuranceScreen = document.getElementById("insuranceScreen");
 
 const historyScreen = document.getElementById("historyScreen");
 const historyDetailScreen = document.getElementById("historyDetailScreen");
+const historyLockedEl = document.getElementById("historyLocked");
+const historyContentEl = document.getElementById("historyContent");
 const historyListEl = document.getElementById("historyList");
 const historyDetailContentEl = document.getElementById("historyDetailContent");
 const historyHeroCountEl = document.getElementById("historyHeroCount");
@@ -1342,6 +1522,11 @@ document.getElementById("closeHistoryScreenBtn").addEventListener("click", () =>
 document.getElementById("closeHistoryDetailBtn").addEventListener("click", () => {
   historyDetailScreen.classList.remove("open");
 });
+document.getElementById("historyUpgradeBtn").addEventListener("click", () => {
+  historyScreen.classList.remove("open");
+  openPremiumScreen();
+});
+
 historyListEl.addEventListener("click", (e) => {
   const card = e.target.closest("[data-history-index]");
   if (!card) return;
@@ -1375,6 +1560,14 @@ function openHistoryDetail(entry) {
 }
 
 function renderHistoryList() {
+  const subscribed = isSubscribed();
+  historyLockedEl.style.display = subscribed ? "none" : "block";
+  historyContentEl.style.display = subscribed ? "block" : "none";
+  if (!subscribed) {
+    historyHeroCountEl.textContent = "0";
+    return;
+  }
+
   historyWithExplanation = loadHistory().filter(h => h.explanation);
   historyHeroCountEl.textContent = String(historyWithExplanation.length);
 
@@ -1418,6 +1611,143 @@ document.getElementById("openInsuranceScreenBtn").addEventListener("click", () =
 document.getElementById("closeInsuranceScreenBtn").addEventListener("click", () => {
   insuranceScreen.classList.remove("open");
 });
+
+const premiumScreen = document.getElementById("premiumScreen");
+const premiumNavLabelEl = document.getElementById("premiumNavLabel");
+const premiumStatusLineEl = document.getElementById("premiumStatusLine");
+const premiumStatusEl = document.getElementById("premiumStatus");
+const upgradeBtn = document.getElementById("upgradeBtn");
+const manageSubscriptionBtn = document.getElementById("manageSubscriptionBtn");
+const goldPremiumBtnEl = document.getElementById("goldPremiumBtn");
+const spendingLockedEl = document.getElementById("spendingLocked");
+const spendingContentEl = document.getElementById("spendingContent");
+const insuranceLockedEl = document.getElementById("insuranceLocked");
+const insuranceContentEl = document.getElementById("insuranceContent");
+
+document.getElementById("openPremiumScreenBtn").addEventListener("click", () => {
+  accountPanel.classList.remove("open");
+  premiumScreen.classList.add("open");
+});
+document.getElementById("goldPremiumBtn").addEventListener("click", () => {
+  accountPanel.classList.remove("open");
+  premiumScreen.classList.add("open");
+});
+document.getElementById("closePremiumScreenBtn").addEventListener("click", () => {
+  premiumScreen.classList.remove("open");
+});
+
+const upgradeNudgeModal = document.getElementById("upgradeNudgeModal");
+document.getElementById("closeUpgradeNudgeBtn").addEventListener("click", () => {
+  upgradeNudgeModal.classList.remove("open");
+});
+document.getElementById("upgradeNudgeBtn").addEventListener("click", () => {
+  upgradeNudgeModal.classList.remove("open");
+  premiumScreen.classList.add("open");
+});
+
+const FREE_LIMIT = 1;
+let subscriptionStatus = "inactive";
+let subscriptionPeriodEnd = null;
+let usageCount = 0;
+
+// TEMP: premium disabled, everything is free for all users.
+// Flip back to false (or delete this line) to restore the paywall UI — every
+// premium check below funnels through isSubscribed(), so that's the only
+// thing that needs to change back.
+const FORCE_PREMIUM_FOR_ALL = false;
+
+function isSubscribed() {
+  return FORCE_PREMIUM_FOR_ALL || subscriptionStatus === "active" || subscriptionStatus === "trialing";
+}
+
+function openPremiumScreen() {
+  accountPanel.classList.remove("open");
+  premiumScreen.classList.add("open");
+}
+
+function renderSubscriptionUI() {
+  const subscribed = isSubscribed();
+  // Real Stripe status, ignoring FORCE_PREMIUM_FOR_ALL — used for the bits
+  // (manage-subscription button, renewal date) that only make sense for an
+  // actual paid subscription and would otherwise error with no Stripe customer.
+  const reallySubscribed = subscriptionStatus === "active" || subscriptionStatus === "trialing";
+  const remaining = Math.max(FREE_LIMIT - usageCount, 0);
+
+  premiumNavLabelEl.textContent = subscribed ? "Premium — Active" : `Free plan — ${remaining}/${FREE_LIMIT} left`;
+
+  premiumStatusLineEl.textContent = subscribed
+    ? `Premium active${reallySubscribed && subscriptionPeriodEnd ? " — renews " + new Date(subscriptionPeriodEnd).toLocaleDateString() : ""}.`
+    : `Free plan — ${remaining === 1 ? "1 free bill summary left" : remaining === 0 ? "no free bill summaries left" : `${remaining} free bill summaries left`} this month.`;
+
+  upgradeBtn.style.display = subscribed ? "none" : "block";
+  manageSubscriptionBtn.style.display = reallySubscribed ? "block" : "none";
+  goldPremiumBtnEl.style.display = subscribed ? "none" : "flex";
+
+  spendingLockedEl.style.display = subscribed ? "none" : "block";
+  spendingContentEl.style.display = subscribed ? "block" : "none";
+  insuranceLockedEl.style.display = subscribed ? "none" : "block";
+  insuranceContentEl.style.display = subscribed ? "block" : "none";
+  if (typeof renderHistoryList === "function") renderHistoryList();
+}
+
+function setSubscription(data) {
+  subscriptionStatus = data.status || "inactive";
+  subscriptionPeriodEnd = data.periodEnd || null;
+  usageCount = (data.usage && data.usage.count) || 0;
+  renderSubscriptionUI();
+}
+
+async function loadSubscription() {
+  if (!authToken) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/subscription`, {
+      headers: { authorization: `Bearer ${authToken}` }
+    });
+    const data = await res.json();
+    if (res.ok) setSubscription(data);
+  } catch {
+    // network error; leave subscription state as-is
+  }
+}
+
+async function startUpgradeCheckout() {
+  if (!authToken) return;
+  premiumStatusEl.textContent = "Redirecting to checkout...";
+  premiumStatusEl.classList.remove("saved");
+  try {
+    const res = await fetch(`${API_BASE}/api/checkout`, {
+      method: "POST",
+      headers: { authorization: `Bearer ${authToken}` }
+    });
+    const data = await res.json();
+    if (!res.ok || !data.url) throw new Error(data.error || "Couldn't start checkout.");
+    window.location.href = data.url;
+  } catch (err) {
+    premiumStatusEl.textContent = err.message || "Couldn't start checkout.";
+  }
+}
+
+async function openBillingPortal() {
+  if (!authToken) return;
+  premiumStatusEl.textContent = "Opening billing portal...";
+  premiumStatusEl.classList.remove("saved");
+  try {
+    const res = await fetch(`${API_BASE}/api/billing-portal`, {
+      method: "POST",
+      headers: { authorization: `Bearer ${authToken}` }
+    });
+    const data = await res.json();
+    if (!res.ok || !data.url) throw new Error(data.error || "Couldn't open billing portal.");
+    window.location.href = data.url;
+  } catch (err) {
+    premiumStatusEl.textContent = err.message || "Couldn't open billing portal.";
+  }
+}
+
+upgradeBtn.addEventListener("click", startUpgradeCheckout);
+manageSubscriptionBtn.addEventListener("click", openBillingPortal);
+document.getElementById("spendingUpgradeBtn").addEventListener("click", openPremiumScreen);
+document.getElementById("insuranceUpgradeBtn").addEventListener("click", openPremiumScreen);
 
 const accountLoggedOut = document.getElementById("accountLoggedOut");
 const accountLoggedIn = document.getElementById("accountLoggedIn");
@@ -1466,7 +1796,9 @@ function setLoggedOut() {
   historyDetailScreen.classList.remove("open");
   spendingScreen.classList.remove("open");
   insuranceScreen.classList.remove("open");
+  premiumScreen.classList.remove("open");
   setAvatarImage(null);
+  setSubscription({ status: "inactive", periodEnd: null, usage: { count: 0 } });
 }
 
 document.getElementById("signupBtn").addEventListener("click", async () => {
@@ -1488,6 +1820,7 @@ document.getElementById("signupBtn").addEventListener("click", async () => {
     await refreshHistoryFromServer();
     await loadInsurancePlan();
     await loadAvatar();
+    await loadSubscription();
   } catch (err) {
     showAuthError(err.message || "Couldn't create account.");
   }
@@ -1511,6 +1844,7 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     await refreshHistoryFromServer();
     await loadInsurancePlan();
     await loadAvatar();
+    await loadSubscription();
   } catch (err) {
     showAuthError(err.message || "Couldn't log in.");
   }
@@ -1532,6 +1866,7 @@ async function refreshHistoryFromServer() {
     }
     const data = await res.json();
     if (res.ok) cachedHistory = data.history;
+    // a 403 here just means the account isn't subscribed yet — not an auth failure.
   } catch {
     // network error; keep whatever was already cached
   }
@@ -1622,6 +1957,7 @@ async function initAuth() {
     await refreshHistoryFromServer();
     await loadInsurancePlan();
     await loadAvatar();
+    await loadSubscription();
   } catch {
     // network error; leave the user logged out for this load
   }
@@ -1798,7 +2134,27 @@ function renderSpendingSummary() {
 }
 
 renderSpendingSummary();
-initAuth();
+initAuth().then(() => {
+  const params = new URLSearchParams(window.location.search);
+  const checkout = params.get("checkout");
+  if (checkout === "success") {
+    loadSubscription();
+    accountPanel.classList.add("open");
+    premiumScreen.classList.add("open");
+    premiumStatusEl.textContent = "Subscription activated — welcome to Premium.";
+    premiumStatusEl.classList.add("saved");
+  } else if (checkout === "cancel") {
+    accountPanel.classList.add("open");
+    premiumScreen.classList.add("open");
+    premiumStatusEl.textContent = "Checkout canceled — no charge was made.";
+    premiumStatusEl.classList.remove("saved");
+  }
+  if (checkout) {
+    params.delete("checkout");
+    const newUrl = window.location.pathname + (params.toString() ? `?${params}` : "");
+    window.history.replaceState({}, "", newUrl);
+  }
+});
 
 const takePhotoBtn = document.getElementById("takePhotoBtn");
 const cameraOverlay = document.getElementById("cameraOverlay");
@@ -2075,6 +2431,22 @@ function renderLeaderboard(entries) {
   }).join("");
 }
 
+// 2-minute upgrade nudge for non-premium users
+const timerNudgeModal = document.getElementById("timerNudgeModal");
+document.getElementById("closeTimerNudgeBtn").addEventListener("click", () => {
+  timerNudgeModal.classList.remove("open");
+});
+document.getElementById("timerNudgeUpgradeBtn").addEventListener("click", () => {
+  timerNudgeModal.classList.remove("open");
+  accountPanel.classList.remove("open");
+  premiumScreen.classList.add("open");
+});
+if (!window.billAPI) {
+  setInterval(() => {
+    if (!isSubscribed()) timerNudgeModal.classList.add("open");
+  }, 2 * 60 * 1000);
+}
+
 explainBtn.addEventListener("click", async () => {
   clearError();
   const text = billText.value.trim();
@@ -2107,11 +2479,20 @@ explainBtn.addEventListener("click", async () => {
         body: JSON.stringify({ text, imageBase64, imageMediaType, insurancePlanText })
       });
       result = await res.json();
+      if (res.status === 403 && result.needsSubscription) {
+        premiumStatusEl.textContent = "";
+        accountPanel.classList.remove("open");
+        premiumScreen.classList.add("open");
+        throw new Error(result.error || "Upgrade to Premium to keep going.");
+      }
     }
 
     if (result.error) {
       throw new Error(result.error);
     }
+
+    const wasFreeUse = !window.billAPI && !isSubscribed();
+    if (!window.billAPI) await loadSubscription();
 
     const { cleanText, summary } = extractSummary(result.text);
     currentSummary = summary;
@@ -2126,6 +2507,10 @@ explainBtn.addEventListener("click", async () => {
     } else if (!window.billAPI) {
       // Web: server auto-saved in /api/explain, just refresh
       await refreshHistoryFromServer();
+    }
+
+    if (wasFreeUse) {
+      upgradeNudgeModal.classList.add("open");
     }
   } catch (err) {
     showError(err.message || "Something went wrong.");

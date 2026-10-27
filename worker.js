@@ -10,7 +10,7 @@ const PREMIUM_PRICE_CENTS = 500;
 // Flip back to false (or delete this line) to restore the paywall — every
 // premium check below funnels through isActiveStatus(), so that's the only
 // thing that needs to change back.
-const FORCE_ALL_PREMIUM = true;
+const FORCE_ALL_PREMIUM = false;
 
 const webCrypto = Stripe.createSubtleCryptoProvider();
 
