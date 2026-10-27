@@ -707,13 +707,16 @@
 
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
-  // Returning users and Stripe checkout redirects go straight to the app.
+  // Stripe checkout redirects go straight to the app; logged-in visitors get an "Open app" button.
   try {
     var params = new URLSearchParams(location.search);
-    if (!params.has("home") && (localStorage.getItem("authToken") || params.has("checkout"))) {
-      params.delete("home");
-      var qs = params.toString();
-      location.replace("/app" + (qs ? "?" + qs : ""));
+    if (params.has("checkout")) {
+      location.replace("/app?" + params.toString());
+    } else if (localStorage.getItem("authToken")) {
+      var login = document.querySelector(".nav-actions .btn-ghost");
+      var start = document.querySelector(".nav-actions .btn-primary");
+      if (login) login.style.display = "none";
+      if (start) start.textContent = "Open app";
     }
   } catch (e) {}
 </script>
