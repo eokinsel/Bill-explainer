@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bill Explainer — Understand any bill in plain English</title>
+<meta name="description" content="Upload a photo or paste the text of any medical, insurance, or utility bill. Bill Explainer breaks down every charge, checks it against your insurance, flags errors, and drafts your dispute letter.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f8fb;
+    --surface: #ffffff;
+    --surface-soft: #f1f4f9;
+    --text: #131a26;
+    --muted: #5d6879;
+    --border: #e1e6ee;
+    --accent: #4f6ef7;
+    --accent-dark: #3a56d8;
+    --accent-soft: #eef1ff;
+    --accent-rgb: 79, 110, 247;
+    --good: #1a8f62;
+    --good-soft: #e6f6ee;
+    --warn: #b9651f;
+    --warn-soft: #fdf0e3;
+    --danger: #c93a49;
+    --danger-soft: #fceaed;
+    --navy: #0f1626;
+    --shadow-sm: 0 1px 2px rgba(15, 22, 38, 0.05);
+    --shadow-md: 0 1px 2px rgba(15, 22, 38, 0.04), 0 12px 32px rgba(15, 22, 38, 0.08);
+    --shadow-lg: 0 2px 4px rgba(15, 22, 38, 0.04), 0 24px 60px rgba(15, 22, 38, 0.14);
+    --radius: 16px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1119;
+      --surface: #161a25;
+      --surface-soft: #1c2130;
+      --text: #e9ecf3;
+      --muted: #98a1b3;
+      --border: #272d3d;
+      --accent: #7690ff;
+      --accent-dark: #93a8ff;
+      --accent-soft: rgba(118, 144, 255, 0.14);
+      --accent-rgb: 118, 144, 255;
+      --good: #3ec893;
+      --good-soft: rgba(62, 200, 147, 0.14);
+      --warn: #f0a15f;
+      --warn-soft: rgba(240, 161, 95, 0.14);
+      --danger: #f2707e;
+      --danger-soft: rgba(242, 112, 126, 0.14);
+      --navy: #070a12;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.3), 0 24px 60px rgba(0, 0, 0, 0.55);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  html, body { overflow-x: hidden; }
+  .hero-grid > * { min-width: 0; }
+  .wrap { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 96px 0; }
+  .eyebrow {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-dark);
+    margin-bottom: 14px;
+  }
+  h2.section-title {
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    font-weight: 800;
+    margin: 0 0 16px;
+  }
+  p.section-lead { font-size: 18px; color: var(--muted); max-width: 620px; margin: 0; }
+  .section-head { margin-bottom: 52px; }
+  .section-head.center { text-align: center; }
+  .section-head.center p.section-lead { margin: 0 auto; }
+
+  /* buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 13px 22px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.1s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .btn svg { width: 16px; height: 16px; }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 1px 2px rgba(15, 22, 38, 0.15), 0 6px 18px rgba(var(--accent-rgb), 0.28); }
+  .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); }
+  @media (prefers-color-scheme: dark) { .btn-primary { color: #0b0f1a; } .btn-primary:hover { background: #93a8ff; } }
+  .btn-ghost { background: var(--surface); color: var(--text); border-color: var(--border); box-shadow: var(--shadow-sm); }
+  .btn-ghost:hover { border-color: rgba(var(--accent-rgb), 0.5); }
+  .btn-lg { padding: 15px 28px; font-size: 16px; }
+  .btn-sm { padding: 9px 16px; font-size: 14px; }
+  a:focus-visible, .btn:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* nav */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: saturate(160%) blur(14px);
+    -webkit-backdrop-filter: saturate(160%) blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 66px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; letter-spacing: -0.01em; }
+  .brand-mark {
+    width: 32px; height: 32px; border-radius: 9px;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.35);
+  }
+  .brand-mark svg { width: 17px; height: 17px; }
+  .nav-links { display: flex; align-items: center; gap: 30px; font-size: 14.5px; font-weight: 500; color: var(--muted); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+  /* hero */
+  .hero { padding: 72px 0 88px; position: relative; overflow: hidden; }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: -200px -10% auto -10%;
+    height: 640px;
+    background:
+      radial-gradient(600px 300px at 20% 30%, rgba(var(--accent-rgb), 0.16), transparent 70%),
+      radial-gradient(500px 280px at 85% 20%, rgba(var(--accent-rgb), 0.09), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-grid { position: relative; display: grid; grid-template-columns: 1.02fr 1fr; gap: 56px; align-items: center; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 999px; padding: 6px 14px 6px 8px;
+    font-size: 13px; font-weight: 600; color: var(--muted);
+    box-shadow: var(--shadow-sm); margin-bottom: 24px;
+  }
+  .pill-dot { background: var(--accent-soft); color: var(--accent-dark); border-radius: 999px; padding: 2px 9px; font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  h1.hero-title {
+    font-size: clamp(38px, 5.4vw, 60px);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    font-weight: 800;
+    margin: 0 0 22px;
+  }
+  h1.hero-title em { font-style: normal; color: var(--accent-dark); }
+  .hero-sub { font-size: 19px; color: var(--muted); max-width: 520px; margin: 0 0 32px; }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13.5px; color: var(--muted); }
+  .hero-meta span { display: inline-flex; align-items: center; gap: 7px; }
+  .hero-meta svg { width: 15px; height: 15px; color: var(--good); }
+
+  /* product mockup */
+  .mock { position: relative; }
+  .mock-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .mock-bar { display: flex; align-items: center; gap: 7px; padding: 13px 16px; border-bottom: 1px solid var(--border); background: var(--surface-soft); }
+  .mock-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--border); display: block; }
+  .mock-bar span { margin-left: 8px; font-size: 12px; color: var(--muted); font-weight: 500; }
+  .mock-body { padding: 22px; }
+  .mock-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+  .mock-head h4 { margin: 0; font-size: 16px; letter-spacing: -0.01em; }
+  .mock-head small { color: var(--muted); font-size: 12.5px; }
+  .mock-total { text-align: right; }
+  .mock-total strong { display: block; font-size: 22px; letter-spacing: -0.02em; }
+  .mock-total small { color: var(--muted); font-size: 12px; }
+  .mock-line { display: flex; justify-content: space-between; gap: 14px; padding: 11px 0; border-top: 1px solid var(--border); font-size: 13.5px; }
+  .mock-line b { font-weight: 600; display: block; }
+  .mock-line span.d { color: var(--muted); font-size: 12.5px; }
+  .mock-line .amt { font-weight: 600; white-space: nowrap; }
+  .mock-flag {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--warn-soft);
+    border: 1px solid color-mix(in srgb, var(--warn) 30%, transparent);
+    border-radius: 12px; padding: 12px 14px; margin-top: 8px;
+    font-size: 13px;
+  }
+  .mock-flag svg { width: 18px; height: 18px; color: var(--warn); flex-shrink: 0; margin-top: 1px; }
+  .mock-flag b { display: block; color: var(--warn); margin-bottom: 1px; }
+  .mock-flag p { margin: 0; color: var(--muted); }
+  .mock-owe {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--good-soft); border-radius: 12px; padding: 13px 16px; margin-top: 12px; font-size: 13.5px;
+  }
+  .mock-owe span { color: var(--muted); }
+  .mock-owe strong { color: var(--good); font-size: 17px; letter-spacing: -0.01em; }
+  .mock-caption { text-align: center; font-size: 12px; color: var(--muted); margin-top: 14px; }
+
+  /* trust strip */
+  .strip { padding: 0 0 8px; }
+  .strip-inner {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow-sm);
+  }
+  .strip-item { padding: 24px 26px; border-right: 1px solid var(--border); }
+  .strip-item:last-child { border-right: none; }
+  .strip-item b { display: block; font-size: 15px; margin-bottom: 3px; letter-spacing: -0.01em; }
+  .strip-item span { font-size: 13.5px; color: var(--muted); }
+
+  /* how it works */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; counter-reset: step; }
+  .step {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 30px 28px; box-shadow: var(--shadow-sm);
+    position: relative;
+  }
+  .step-num {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--accent-soft); color: var(--accent-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 15px; margin-bottom: 20px;
+  }
+  .step h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: -0.015em; }
+  .step p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  /* features */
+  .features-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .feature {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .feature:hover { border-color: rgba(var(--accent-rgb), 0.45); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .feature-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--accent-soft); color: var(--accent-dark);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
+  }
+  .feature-icon svg { width: 22px; height: 22px; }
+  .feature h3 { margin: 0 0 8px; font-size: 17.5px; letter-spacing: -0.015em; }
+  .feature p { margin: 0; color: var(--muted); font-size: 15px; }
+  .tag { display: inline-block; margin-left: 8px; vertical-align: 2px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; background: var(--accent-soft); color: var(--accent-dark); border-radius: 6px; padding: 2px 7px; }
+
+  /* comparison */
+  .compare-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); box-shadow: var(--shadow-md); }
+  table.compare { width: 100%; border-collapse: collapse; min-width: 720px; }
+  .compare th, .compare td { padding: 18px 22px; text-align: center; font-size: 15px; border-bottom: 1px solid var(--border); }
+  .compare tr:last-child td { border-bottom: none; }
+  .compare th { font-size: 14px; font-weight: 600; color: var(--muted); background: var(--surface-soft); }
+  .compare th:first-child, .compare td:first-child { text-align: left; }
+  .compare td:first-child { font-weight: 600; }
+  .compare td:first-child small { display: block; font-weight: 400; color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .compare th.us { color: var(--accent-dark); background: var(--accent-soft); font-size: 15px; font-weight: 700; }
+  .compare td.us { background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
+  .ck, .no, .part { display: inline-flex; width: 26px; height: 26px; border-radius: 50%; align-items: center; justify-content: center; }
+  .ck { background: var(--good-soft); color: var(--good); }
+  .no { background: var(--surface-soft); color: var(--muted); }
+  .part { background: var(--warn-soft); color: var(--warn); }
+  .ck svg, .no svg, .part svg { width: 14px; height: 14px; }
+  .cell-note { display: block; font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+
+  /* pricing */
+  .pricing { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 820px; margin: 0 auto; }
+  .plan {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; padding: 36px 34px; box-shadow: var(--shadow-sm);
+    display: flex; flex-direction: column; position: relative;
+  }
+  .plan.featured { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), var(--shadow-lg); }
+  .plan-badge {
+    position: absolute; top: -13px; left: 34px;
+    background: var(--accent); color: #fff; font-size: 11.5px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px;
+  }
+  @media (prefers-color-scheme: dark) { .plan-badge { color: #0b0f1a; } }
+  .plan h3 { margin: 0 0 6px; font-size: 18px; }
+  .plan .price { font-size: 46px; font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin: 10px 0 4px; }
+  .plan .price small { font-size: 16px; color: var(--muted); font-weight: 500; letter-spacing: 0; }
+  .plan .for { color: var(--muted); font-size: 14.5px; margin: 0 0 24px; }
+  .plan ul { list-style: none; padding: 0; margin: 0 0 30px; display: flex; flex-direction: column; gap: 13px; flex: 1; }
+  .plan li { display: flex; gap: 11px; align-items: flex-start; font-size: 15px; }
+  .plan li svg { width: 18px; height: 18px; color: var(--good); flex-shrink: 0; margin-top: 2px; }
+  .plan li.off { color: var(--muted); }
+  .plan li.off svg { color: var(--border); }
+  .plan .btn { width: 100%; }
+
+  /* faq */
+  .faq { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+  details {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 0 24px; box-shadow: var(--shadow-sm);
+  }
+  summary {
+    list-style: none; cursor: pointer; padding: 20px 0;
+    font-weight: 600; font-size: 16px; display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-size: 22px; font-weight: 400; color: var(--muted); transition: transform 0.2s; line-height: 1; }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { margin: 0 0 22px; color: var(--muted); font-size: 15.5px; }
+
+  /* final cta */
+  .cta-band { padding: 0 0 96px; }
+  .cta-card {
+    background: var(--navy); color: #fff; border-radius: 24px; padding: 68px 32px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-card::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(520px 260px at 50% 0%, rgba(var(--accent-rgb), 0.38), transparent 70%);
+  }
+  .cta-card > * { position: relative; }
+  .cta-card h2 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -0.025em; margin: 0 0 14px; font-weight: 800; }
+  .cta-card p { color: #aab3c5; font-size: 18px; margin: 0 auto 30px; max-width: 520px; }
+  .cta-card .btn-primary { background: #fff; color: #0f1626; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
+  .cta-card .btn-primary:hover { background: #e9edff; }
+
+  /* footer */
+  footer { border-top: 1px solid var(--border); padding: 36px 0 48px; font-size: 13.5px; color: var(--muted); }
+  .foot { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .foot p { margin: 0; max-width: 620px; }
+  .foot-links { display: flex; gap: 22px; }
+  .foot-links a:hover { color: var(--text); }
+
+  /* responsive */
+  @media (max-width: 960px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+    .features { grid-template-columns: repeat(2, 1fr); }
+    .strip-inner { grid-template-columns: repeat(2, 1fr); }
+    .strip-item:nth-child(2) { border-right: none; }
+    .strip-item:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+  }
+  @media (max-width: 760px) {
+    section { padding: 68px 0; }
+    .nav-links { display: none; }
+    .steps, .pricing { grid-template-columns: 1fr; }
+    .hero { padding: 48px 0 64px; }
+    .hero-sub { font-size: 17px; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 0 18px; }
+    .features { grid-template-columns: 1fr; }
+    .strip-inner { grid-template-columns: 1fr; }
+    .strip-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .strip-item:last-child { border-bottom: none; }
+    .plan { padding: 30px 24px; }
+    .plan-badge { left: 24px; }
+    .btn-lg { width: 100%; }
+    .nav-actions .btn-ghost { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/" aria-label="Bill Explainer home">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+      </span>
+      Bill Explainer
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#compare">Compare</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost btn-sm" href="/app">Log in</a>
+      <a class="btn btn-primary btn-sm" href="/app">Get started free</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="pill"><span class="pill-dot">New</span> Dispute letters, drafted for you</div>
+        <h1 class="hero-title">Finally understand <em>every line</em> of your bill.</h1>
+        <p class="hero-sub">Snap a photo or paste the text of any medical, insurance, or utility bill. Get a plain-English breakdown, see what your insurance should cover, and catch charges that don't add up.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="/app">
+            Explain my first bill free
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-lg" href="#how">See how it works</a>
+        </div>
+        <div class="hero-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Free first summary every year</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Photo or text, no typing needed</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Results in seconds</span>
+        </div>
+      </div>
+
+      <div class="mock" aria-hidden="true">
+        <div class="mock-card">
+          <div class="mock-bar"><i></i><i></i><i></i><span>Bill Explainer</span></div>
+          <div class="mock-body">
+            <div class="mock-head">
+              <div>
+                <h4>Riverside Medical Center</h4>
+                <small>Statement · due Nov 14</small>
+              </div>
+              <div class="mock-total">
+                <strong>$2,386.00</strong>
+                <small>Billed amount</small>
+              </div>
+            </div>
+            <div class="mock-line">
+              <div><b>Emergency room visit</b><span class="d">Highest-complexity ER evaluation</span></div>
+              <div class="amt">$1,840.00</div>
+            </div>
+            <div class="mock-line">
+              <div><b>Blood work panel</b><span class="d">Routine lab tests</span></div>
+              <div class="amt">$186.00</div>
+            </div>
+            <div class="mock-line">
+              <div><b>Blood work panel</b><span class="d">Routine lab tests</span></div>
+              <div class="amt">$186.00</div>
+            </div>
+            <div class="mock-line">
+              <div><b>Facility fee</b><span class="d">Use of the hospital's equipment and space</span></div>
+              <div class="amt">$174.00</div>
+            </div>
+            <div class="mock-flag">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <div><b>Possible duplicate charge</b><p>The same lab panel appears twice. Worth disputing — a letter is ready.</p></div>
+            </div>
+            <div class="mock-owe"><span>Estimated after your insurance</span><strong>$412.00</strong></div>
+          </div>
+        </div>
+        <div class="mock-caption">Illustrative example</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRIP -->
+  <div class="wrap strip">
+    <div class="strip-inner">
+      <div class="strip-item"><b>Any bill type</b><span>Medical, insurance, utility and more</span></div>
+      <div class="strip-item"><b>Photo or text</b><span>Snap it, upload it, or paste it</span></div>
+      <div class="strip-item"><b>Line by line</b><span>Every charge explained, no jargon</span></div>
+      <div class="strip-item"><b>On every device</b><span>Web and desktop app</span></div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">How it works</span>
+        <h2 class="section-title">From confusing to clear in three steps</h2>
+        <p class="section-lead">No forms to fill out and no jargon to decode. Start with the bill you already have.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Add your bill</h3>
+          <p>Take a photo, upload an image, or paste the text. Medical statements, insurance EOBs, utility bills — all welcome.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Get the plain-English version</h3>
+          <p>Every charge is explained in everyday language, with the total, the due date, and what actually needs your attention.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Know what to do next</h3>
+          <p>See what your insurance should cover, spot charges that look wrong, and send a ready-made dispute letter if something's off.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="features-section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Why Bill Explainer</span>
+        <h2 class="section-title">More than a summary.<br>A second set of eyes on every bill.</h2>
+        <p class="section-lead">Anyone can ask a chatbot what a bill says. Bill Explainer remembers your coverage, your history, and your spending, so each new bill gets smarter answers.</p>
+      </div>
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></div>
+          <h3>Plain-English breakdowns</h3>
+          <p>Billing codes and medical shorthand, translated. Every charge, fee, and adjustment explained in words you'd actually use.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>Insurance matching</h3>
+          <p>Save your plan once. Each bill is checked against your own coverage so you can see what you should owe, not just what's billed.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <h3>Error spotting</h3>
+          <p>Duplicate charges, odd fees, and items that don't add up are flagged so you don't have to hunt for them.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+          <h3>Dispute letters</h3>
+          <p>Found something wrong? Get a clear, professional letter drafted from the details of your bill, ready to send.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <h3>Month-over-month comparison</h3>
+          <p>Billed by the same provider last month? See whether the amount went up or down and which charges are new.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <h3>History, spending &amp; reminders</h3>
+          <p>Every explained bill is saved, totals are tracked by category, and due-date reminders keep late fees away.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARE -->
+  <section id="compare">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">The difference</span>
+        <h2 class="section-title">Why people choose Bill Explainer</h2>
+        <p class="section-lead">Built for one job: making sense of what you owe.</p>
+      </div>
+      <div class="compare-wrap">
+        <table class="compare">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="us">Bill Explainer</th>
+              <th>Decoding it yourself</th>
+              <th>A general chatbot</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Plain-English, line-by-line explanation</td>
+              <td class="us"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+              <td><span class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></span></td>
+              <td><span class="part"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="cell-note">If you prompt it well</span></td>
+            </tr>
+            <tr>
+              <td>Reads a photo of your bill <small>No retyping line items</small></td>
+              <td class="us"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+              <td><span class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></span></td>
+              <td><span class="part"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="cell-note">Varies by tool</span></td>
+            </tr>
+            <tr>
+              <td>Remembers your insurance plan <small>Saved once, applied to every bill</small></td>
+              <td class="us"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+              <td><span class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></span></td>
+              <td><span class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></span><span class="cell-note">Paste it every time</span></td>
+            </tr>
+            <tr>
+              <td>Compares to last month's bill</td>
+              <td class="us"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+              <td><span class="part"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="cell-note">Manually</span></td>
+              <td><span class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></span></td>
+            </tr>
+            <tr>
+              <td>Drafts a dispute letter</td>
+              <td class="us"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+              <td><span class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></span></td>
+              <td><span class="part"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="cell-note">If you ask</span></td>
+            </tr>
+            <tr>
+              <td>Saves history &amp; tracks spending by category</td>
+              <td class="us"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+              <td><span class="part"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="cell-note">A spreadsheet</span></td>
+              <td><span class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></span></td>
+            </tr>
+            <tr>
+              <td>Due-date reminders</td>
+              <td class="us"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+              <td><span class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></span></td>
+              <td><span class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" class="features-section">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Pricing</span>
+        <h2 class="section-title">Simple pricing. Try it before you pay.</h2>
+        <p class="section-lead">Explain your first bill free. Upgrade only when you want the full toolkit.</p>
+      </div>
+      <div class="pricing">
+        <div class="plan">
+          <h3>Free</h3>
+          <div class="price">$0</div>
+          <p class="for">See how it works on a real bill.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>1 free bill summary every year</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Photo upload or pasted text</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Plain-English explanation</li>
+            <li class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Insurance matching &amp; dispute letters</li>
+          </ul>
+          <a class="btn btn-ghost btn-lg" href="/app">Start free</a>
+        </div>
+        <div class="plan featured">
+          <span class="plan-badge">Most popular</span>
+          <h3>Premium</h3>
+          <div class="price">$5<small> / month</small></div>
+          <p class="for">For anyone who gets bills they can't afford to misread.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Unlimited bill summaries</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Insurance coverage matching</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Dispute letters</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Month-over-month comparison</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Bill history &amp; spending tracker</li>
+          </ul>
+          <a class="btn btn-primary btn-lg" href="/app">Get Premium</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="section-title">Questions, answered</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>What kinds of bills can I use?</summary>
+          <p>Medical statements, insurance documents, utility bills, and most other bills you can photograph or copy the text from. Bills are sorted into categories like Medical, Insurance, Utility, and Other.</p>
+        </details>
+        <details>
+          <summary>How does insurance matching work?</summary>
+          <p>You add your plan's coverage details once. When you explain a bill, Bill Explainer uses them to show what your plan should cover for each charge and what you're likely to owe.</p>
+        </details>
+        <details>
+          <summary>Is this legal or financial advice?</summary>
+          <p>No. Bill Explainer is an AI-powered tool that helps you read and question your bills. Always confirm important details with your provider or insurer, and consult a professional for legal or financial decisions.</p>
+        </details>
+        <details>
+          <summary>What do I get for free?</summary>
+          <p>Every account can explain one bill free each year, so you can see exactly how it works on a real bill before deciding on Premium.</p>
+        </details>
+        <details>
+          <summary>Can I cancel Premium any time?</summary>
+          <p>Yes. Premium is $5 a month, and you can manage or cancel your subscription from your account at any time.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <div class="wrap cta-band">
+    <div class="cta-card">
+      <h2>Stop guessing. Start understanding.</h2>
+      <p>Bring the bill that's been sitting on your counter. Your first summary is on us.</p>
+      <a class="btn btn-primary btn-lg" href="/app">Explain my first bill free</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <p>&copy; <span id="year">2026</span> Bill Explainer. Summaries are generated by AI and are for informational purposes only; they are not legal, medical, or financial advice.</p>
+    <div class="foot-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="/app">Open app</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+  // Returning users and Stripe checkout redirects go straight to the app.
+  try {
+    var params = new URLSearchParams(location.search);
+    if (!params.has("home") && (localStorage.getItem("authToken") || params.has("checkout"))) {
+      params.delete("home");
+      var qs = params.toString();
+      location.replace("/app" + (qs ? "?" + qs : ""));
+    }
+  } catch (e) {}
+</script>
+</body>
+</html>

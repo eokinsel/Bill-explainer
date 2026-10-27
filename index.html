@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bill Explainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg-1: #f0f3f8;
@@ -334,77 +337,6 @@
   .premium-cta-btn svg { width: 17px; height: 17px; color: #4b3300; }
   .premium-cta-btn:hover:not(:disabled) { filter: brightness(1.04); transform: translateY(-1px); }
   .premium-cta-btn:active:not(:disabled) { transform: translateY(1px); border-bottom-width: 2px; }
-
-  /* landing page */
-  .simplify-cta-btn {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1100;
-    width: auto;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 11px 18px;
-    font-size: 13.5px;
-  }
-  .simplify-cta-btn svg { width: 15px; height: 15px; }
-  @media (max-width: 420px) {
-    .simplify-cta-btn { padding: 9px 13px; font-size: 12px; gap: 4px; }
-  }
-
-  .landing-hero { text-align: center; padding: 14px 4px 30px; }
-  .landing-hero-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-light));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 16px;
-    box-shadow: 0 8px 22px rgba(var(--accent-rgb), 0.35);
-  }
-  .landing-hero-icon svg { width: 28px; height: 28px; }
-  .landing-hero h1 { font-size: 30px; font-weight: 800; margin: 0 0 10px; letter-spacing: -0.02em; }
-  .landing-hero p { font-size: 16px; color: var(--muted); margin: 0 auto; max-width: 420px; }
-
-  .landing-features { display: flex; flex-direction: column; gap: 14px; margin-bottom: 26px; }
-  .landing-feature-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px 18px;
-    box-shadow: var(--shadow);
-  }
-  .landing-feature-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .landing-feature-icon svg { width: 20px; height: 20px; color: white; }
-  .landing-feature-text h3 { margin: 0 0 3px; font-size: 15px; font-weight: 700; }
-  .landing-feature-text p { margin: 0; font-size: 13.5px; color: var(--muted); line-height: 1.4; }
-
-  .landing-feature-icon.feat-summaries { background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
-  .landing-feature-icon.feat-insurance { background: linear-gradient(140deg, #0e8a6a, #12b88e); }
-  .landing-feature-icon.feat-dispute { background: linear-gradient(140deg, #2d1b4e, #4a2d8a); }
-  .landing-feature-icon.feat-spending { background: linear-gradient(140deg, #1e2a3a, #2b3d56); }
-
-  .landing-get-started-btn { margin-bottom: 34px; }
-
-  @media (max-width: 480px) {
-    .landing-hero h1 { font-size: 25px; }
-    .landing-hero p { font-size: 14.5px; }
-    .landing-feature-row { flex-direction: column; text-align: center; gap: 10px; padding: 18px 16px; }
-  }
 
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; }
   .modal-overlay.open { display: flex; }
@@ -896,6 +828,20 @@
   .lb-user { flex: 1; font-size: 14px; font-weight: 600; }
   .lb-disputed { font-size: 13.5px; font-weight: 700; color: var(--good); }
   .lb-empty { color: var(--muted); font-size: 13.5px; text-align: center; padding: 14px 0 4px; }
+
+  /* professional polish */
+  :root { --radius: 14px; --shadow: 0 1px 2px rgba(15, 22, 38, 0.05), 0 6px 20px rgba(15, 22, 38, 0.05); }
+  body { background: var(--bg-1); padding-top: 84px; letter-spacing: -0.005em; }
+  .hero { padding-bottom: 22px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+  .hero-icon { width: 40px; height: 40px; border-radius: 11px; background: var(--accent); box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3); }
+  .hero h1 { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; }
+  .card { border-radius: var(--radius); padding: 24px; }
+  .card-title { font-size: 12px; letter-spacing: 0.07em; }
+  input[type="password"], input[type="text"], input[type="email"], textarea { border-radius: 9px; }
+  button { background: var(--accent); border-radius: 10px; font-weight: 600; box-shadow: 0 1px 2px rgba(15, 22, 38, 0.12), 0 4px 14px rgba(var(--accent-rgb), 0.22); }
+  button:hover:not(:disabled) { background: var(--accent-dark); }
+  button.secondary { background: var(--surface); font-weight: 600; box-shadow: none; }
+  html[data-mode="dark"] button:not(.secondary):not(.premium-cta-btn) { color: #0b0f1a; }
 </style>
 </head>
 <body>
@@ -936,7 +882,7 @@
         <input type="password" id="signupPassword" placeholder="At least 8 characters">
         <button id="signupBtn" type="button" style="margin-top:14px">Create account</button>
       </div>
-      <div class="auth-hint">Log in — your first bill summary each month is free. Upgrade to Premium for unlimited summaries plus insurance matching, dispute letters, and spending tracking.</div>
+      <div class="auth-hint">Log in — your first bill summary each year is free. Upgrade to Premium for unlimited summaries plus insurance matching, dispute letters, and spending tracking.</div>
       <div id="authError"></div>
     </div>
     <div id="accountLoggedIn" style="display:none">
@@ -981,12 +927,6 @@
     </div>
   </div>
 </div>
-
-<button class="simplify-cta-btn" id="simplifyCtaBtn" type="button">
-  Simplify a bill
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-</button>
-
 <div class="modal-overlay" id="upgradeNudgeModal">
   <div class="modal-card">
     <button class="modal-close-btn" id="closeUpgradeNudgeBtn" type="button" aria-label="Close">&times;</button>
@@ -1155,55 +1095,6 @@
 </div>
 
 <div class="app">
-  <div class="landing-hero">
-    <div class="landing-hero-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
-    </div>
-    <h1>Bill Explainer</h1>
-    <p>Turn any confusing bill into a plain-English summary in seconds.</p>
-  </div>
-
-  <div class="landing-features">
-    <div class="landing-feature-row">
-      <div class="landing-feature-icon feat-summaries">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
-      </div>
-      <div class="landing-feature-text">
-        <h3>Plain-English summaries</h3>
-        <p>Upload a photo or paste the text — get a breakdown of every charge in seconds.</p>
-      </div>
-    </div>
-    <div class="landing-feature-row">
-      <div class="landing-feature-icon feat-insurance">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      </div>
-      <div class="landing-feature-text">
-        <h3>Insurance matching</h3>
-        <p>See what your plan actually covers on each charge, based on your own coverage details.</p>
-      </div>
-    </div>
-    <div class="landing-feature-row">
-      <div class="landing-feature-icon feat-dispute">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-      </div>
-      <div class="landing-feature-text">
-        <h3>Dispute letters</h3>
-        <p>Spot billing errors and get a ready-to-send letter to fight them.</p>
-      </div>
-    </div>
-    <div class="landing-feature-row">
-      <div class="landing-feature-icon feat-spending">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      </div>
-      <div class="landing-feature-text">
-        <h3>Spending tracker</h3>
-        <p>See where your money goes, broken down by category, bill after bill.</p>
-      </div>
-    </div>
-  </div>
-
-  <button class="landing-get-started-btn" id="getStartedBtn" type="button">Get started free</button>
-
   <div class="hero">
     <div class="hero-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
@@ -1329,8 +1220,6 @@ const uploadCard = document.getElementById("uploadCard");
 function scrollToUploadCard() {
   uploadCard.scrollIntoView({ behavior: "smooth", block: "start" });
 }
-document.getElementById("simplifyCtaBtn").addEventListener("click", scrollToUploadCard);
-document.getElementById("getStartedBtn").addEventListener("click", scrollToUploadCard);
 
 const THEME_KEY = "billExplainerTheme";
 const themeSwatches = document.querySelectorAll(".theme-swatch");

@@ -520,6 +520,12 @@ export default {
       return new Response(null, { headers: CORS_HEADERS });
     }
 
+    // Marketing landing page at "/", the app itself at "/app".
+    if (request.method === "GET" || request.method === "HEAD") {
+      const page = url.pathname === "/" ? "/landing.html" : url.pathname === "/app" || url.pathname === "/app/" ? "/index.html" : null;
+      if (page) return env.ASSETS.fetch(new Request(new URL(page, url), request));
+    }
+
     if (url.pathname === "/api/explain" && request.method === "POST") {
       const userId = await getAuthUserId(request, env.SESSION_SECRET);
       if (!userId) return json(401, { error: "Log in to explain a bill." });
@@ -716,8 +722,8 @@ export default {
           metadata: { userId },
           subscription_data: { metadata: { userId } },
           customer_email: user?.email,
-          success_url: `${origin}/?checkout=success`,
-          cancel_url: `${origin}/?checkout=cancel`
+          success_url: `${origin}/app?checkout=success`,
+          cancel_url: `${origin}/app?checkout=cancel`
         });
         return json(200, { url: session.url });
       } catch (err) {
@@ -736,7 +742,7 @@ export default {
         const origin = request.headers.get("origin") || url.origin;
         const portalSession = await stripe.billingPortal.sessions.create({
           customer: row.stripe_customer_id,
-          return_url: `${origin}/`
+          return_url: `${origin}/app`
         });
         return json(200, { url: portalSession.url });
       } catch (err) {
